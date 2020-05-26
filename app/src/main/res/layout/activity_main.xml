@@ -3,11 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="36dp"
+        android:layout_margin="20dp" />
+
+    <TextView
+        android:id="@+id/textView_date"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
         android:layout_margin="20dp"
-       />
+        android:text="Date" />
 </LinearLayout>
