@@ -40,7 +40,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Wird aufgerufen, wenn der Lernen Button gedrückt wird.
+     * Hier bitte ergänzen, was passieren soll, wenn der Studi lernt.
+     */
     private void learn() {
+        // Bild ändern auf Lernen Bild
         mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_learning));
     }
 }
