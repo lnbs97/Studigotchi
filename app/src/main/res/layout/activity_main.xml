@@ -11,10 +11,24 @@
         android:layout_height="36dp"
         android:layout_margin="20dp" />
 
+    <ImageView
+        android:id="@+id/imageView_studi"
+        android:layout_width="300dp"
+        android:layout_height="400dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_studi_idle" />
+
     <TextView
         android:id="@+id/textView_date"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_margin="20dp"
         android:text="Date" />
+
+    <Button
+        android:id="@+id/button_learn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/learn" />
 </LinearLayout>
