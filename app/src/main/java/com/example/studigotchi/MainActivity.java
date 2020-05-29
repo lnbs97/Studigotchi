@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mStudiImageView;
     private Button mLearnButton;
     private static final String TAG = "MainActivity";
-    private String timestamp;
+    private Long timestamp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +46,12 @@ public class MainActivity extends AppCompatActivity {
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         //SharedPref auslesen und timestamp schreiben
-        timestamp = mySPR.getString("myDate", "date");
+        timestamp = mySPR.getLong("myDate",0);
         System.out.println(timestamp);
 
         //timestamp ausgeben (Nur als Nachweis, dass es funktioniert)
         TextView textView = findViewById(R.id.textView_date);
-        textView.setText(timestamp);
+        textView.setText("" + timestamp);
     }
 
     /**
@@ -73,12 +73,10 @@ public class MainActivity extends AppCompatActivity {
         //Editor Klasse initialisieren
         SharedPreferences.Editor sprEditor = mySPR.edit();
 
-        //CurrentDate als String aus Kalender abgreifen
-        Calendar calendar = Calendar.getInstance();
-        String currentDate = DateFormat.getDateTimeInstance().format(calendar.getTimeInMillis());
+        long unixTime = System.currentTimeMillis();
 
         //CurrentDate in mySPR speichern
-        sprEditor.putString("myDate", currentDate);
+        sprEditor.putLong("myDate", unixTime);
 
         //Speichern
         sprEditor.commit();
