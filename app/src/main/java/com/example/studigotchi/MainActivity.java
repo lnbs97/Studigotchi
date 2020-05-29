@@ -36,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
                 learn();
             }
         });
-
-        Log.i(TAG, "onCreate");
     }
 
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
@@ -46,8 +44,7 @@ public class MainActivity extends AppCompatActivity {
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         //SharedPref auslesen und timestamp schreiben
-        timestamp = mySPR.getLong("myDate",0);
-        System.out.println(timestamp);
+        timestamp = mySPR.getLong("quittime",0);
 
         //timestamp ausgeben (Nur als Nachweis, dass es funktioniert)
         TextView textView = findViewById(R.id.textView_date);
@@ -73,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
         //Editor Klasse initialisieren
         SharedPreferences.Editor sprEditor = mySPR.edit();
 
-        long unixTime = System.currentTimeMillis();
+        long quitTime = System.currentTimeMillis();
 
         //CurrentDate in mySPR speichern
-        sprEditor.putLong("myDate", unixTime);
+        sprEditor.putLong("quittime", quitTime);
 
         //Speichern
         sprEditor.commit();
