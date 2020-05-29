@@ -49,8 +49,15 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
+        SharedPreferences.Editor editor = mySPR.edit();
         //SharedPref auslesen und timestamp schreiben
         timestamp = mySPR.getLong("quittime",0);
+
+        boolean firstRun = mySPR.getBoolean("firstRun", true);
+        if (firstRun) {
+            editor.putBoolean("firstRun", false).commit();
+            editor.putInt("health", 100);
+        }
 
         //timestamp ausgeben (Nur als Nachweis, dass es funktioniert)
         TextView textView = findViewById(R.id.textView_date);
