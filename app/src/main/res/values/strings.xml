@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Studigotchi</string>
     <string name="learn">Lernen</string>
+    <string name="mainActivity">Enter</string>
+    <string name="enter_Name">Gib einen Namen ein</string>
+    <string name="welcome">Herzlichen Willkommen bei Studigotchi!\n
+    Jetzt geht die Reise deines Studigotchis los.\n
+    Als erstes gib deinem Studigotchi einen Namen.</string>
 </resources>

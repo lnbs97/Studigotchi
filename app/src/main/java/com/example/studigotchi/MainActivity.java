@@ -3,6 +3,7 @@ package com.example.studigotchi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
@@ -22,8 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private Button mLearnButton;
     private static final String TAG = "MainActivity";
     private Long timestamp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         setTheme(R.style.AppTheme);
         try {
             Thread.sleep(1000);
@@ -54,14 +57,26 @@ public class MainActivity extends AppCompatActivity {
         timestamp = mySPR.getLong("quittime",0);
 
         boolean firstRun = mySPR.getBoolean("firstRun", true);
+
+        //Abfrage, ob App das erste mal aufgerufen wurde
         if (firstRun) {
+
+            //firstRun Boolean auf false
             editor.putBoolean("firstRun", false).commit();
             editor.putInt("health", 100);
+            //first RunActivity aufrufen, um Studinamen zu vergeben
+            openFirstRunActivity();
         }
+
+        //name aus sharedpref in TextView schreiben
+        TextView textview = findViewById(R.id.studiName);
+        textview.setText(mySPR.getString("name", "Dein Studigotchi"));
+
 
         //timestamp ausgeben (Nur als Nachweis, dass es funktioniert)
         TextView textView = findViewById(R.id.textView_date);
         textView.setText("" + timestamp);
+        Log.d(TAG, "onResume");
     }
 
     /**
@@ -73,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
         mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_learning));
     }
 
+    public void openFirstRunActivity(){
+        Intent intent = new Intent(this, firstRunActivity.class);
+        startActivity(intent);
+    }
+
     //Beim Pausieren/Schließen der App wird ein aktueller timestamp in den SharedPrefs gespeichert.
     protected void onPause(){
         super.onPause();
@@ -81,15 +101,12 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
 
         //Editor Klasse initialisieren
-        SharedPreferences.Editor sprEditor = mySPR.edit();
+        SharedPreferences.Editor editor = mySPR.edit();
 
         long quitTime = System.currentTimeMillis();
 
         //CurrentDate in mySPR speichern
-        sprEditor.putLong("quittime", quitTime);
-
-        //Speichern
-        sprEditor.commit();
+        editor.putLong("quittime", quitTime).commit();
 
     }
 }
