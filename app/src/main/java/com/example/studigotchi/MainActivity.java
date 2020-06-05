@@ -3,10 +3,16 @@ package com.example.studigotchi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.icu.text.RelativeDateTimeFormatter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
@@ -27,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         setTheme(R.style.AppTheme);
         try {
             Thread.sleep(1000);
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();
 
         mStudiImageView = findViewById(R.id.imageView_studi);
         mLearnButton = findViewById(R.id.button_learn);
@@ -43,8 +51,36 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 learn();
+
+                Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,0, intent, 0);
+
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                long timeAtButtonClick = System.currentTimeMillis();
+                //zu Testzwecken gibt es eine Benachrichtigung nach 10 Sekunden
+                long oneHourInMillies = 1000*10;
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP, timeAtButtonClick+oneHourInMillies, pendingIntent);
+
             }
         });
+    }
+
+    private void createNotificationChannel(){
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            String description = "This is channel 1";
+            NotificationChannel channelLearn = new NotificationChannel("notifyLearn", "LEARN", NotificationManager.IMPORTANCE_DEFAULT);
+            channelLearn.setDescription(description);
+            channelLearn.enableVibration(true);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channelLearn);
+        }
     }
 
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
