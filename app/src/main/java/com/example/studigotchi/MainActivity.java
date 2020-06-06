@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startAlarm(){
-        /*
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,0, intent, 0);
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         long oneHourInMillies = 1000*10;
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick+oneHourInMillies, pendingIntent);
-        */
+
     }
 
     private void openFirstRunActivity(){
