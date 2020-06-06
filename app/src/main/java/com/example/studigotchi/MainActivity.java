@@ -3,6 +3,7 @@ package com.example.studigotchi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -55,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void clearSharedPreferences() {
+        this.getSharedPreferences("mySPRFILE", 0).edit().clear().commit();
+    }
+
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
         super.onResume();
@@ -62,19 +67,26 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         SharedPreferences.Editor editor = mySPR.edit();
         //SharedPref auslesen und timestamp schreiben
-        timestamp = mySPR.getLong("quittime",0);
+        timestamp = mySPR.getLong("quittime", 0);
 
         boolean firstRun = mySPR.getBoolean("firstRun", true);
-
         //Abfrage, ob App das erste mal aufgerufen wurde
         if (firstRun) {
 
             //firstRun Boolean auf false
             editor.putBoolean("firstRun", false).commit();
+            // Startleben auf 100
             editor.putInt("health", 100);
+            // Zeit des erstens Starts
+            long firstRunTime = System.currentTimeMillis();
+            editor.putLong("firstRunTime", firstRunTime).commit();
             //first RunActivity aufrufen, um Studinamen zu vergeben
             openFirstRunActivity();
         }
+
+
+        TextView studientageTextView = findViewById(R.id.tv_studientage);
+        studientageTextView.setText("" + getStudienTage());
 
         //name aus sharedpref in TextView schreiben
         TextView textview = findViewById(R.id.studiName);
@@ -85,6 +97,17 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.textView_date);
         textView.setText("" + timestamp);
         Log.d(TAG, "onResume");
+    }
+
+    private int getStudienTage() {
+        SharedPreferences sharedPreferences = getSharedPreferences("mySPRFILE", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        long firstRunTime = sharedPreferences.getLong("firstRunTime", 0);
+        long currentTime = System.currentTimeMillis();
+        long timeAlive = currentTime - firstRunTime;
+
+        int studienTage = (int) (timeAlive / 1000 / 60 / 60 / 4);
+        return studienTage;
     }
 
     /**
@@ -113,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startAlarm(){
+        /*
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,0, intent, 0);
@@ -122,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         long oneHourInMillies = 1000*10;
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick+oneHourInMillies, pendingIntent);
-
+        */
     }
 
     private void openFirstRunActivity(){
@@ -131,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Beim Pausieren/Schließen der App wird ein aktueller timestamp in den SharedPrefs gespeichert.
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
             setQuitTime();
 

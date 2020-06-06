@@ -22,7 +22,6 @@ public class firstRunActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first_run);
 
-
         enterButton = findViewById(R.id.button_mainActivity);
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
