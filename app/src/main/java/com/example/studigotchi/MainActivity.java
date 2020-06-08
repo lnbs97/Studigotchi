@@ -1,25 +1,25 @@
 package com.example.studigotchi;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import android.content.Context;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -28,9 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mLearnButton;
     private Boolean musicIsPlaying = true;
     private static final String TAG = "MainActivity";
-    private Long timestamp;
+    private ProgressBar mProgressbar;
     private Button musicButton;
-
 
 
     @Override
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         mStudiImageView = findViewById(R.id.imageView_studi);
         mLearnButton = findViewById(R.id.button_learn);
+        mProgressbar = findViewById(R.id.pb_learning);
         musicButton = findViewById(R.id.button_music);
 
         musicButton.setOnClickListener(new View.OnClickListener() {
@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         SharedPreferences.Editor editor = mySPR.edit();
-        //SharedPref auslesen und timestamp schreiben
-        timestamp = mySPR.getLong("quittime", 0);
 
         boolean firstRun = mySPR.getBoolean("firstRun", true);
         //Abfrage, ob App das erste mal aufgerufen wurde
@@ -109,9 +107,12 @@ public class MainActivity extends AppCompatActivity {
         //TODO Leben neu berechenen und abspeichern
         editor.putInt("health", 100).commit(); //Um Tod etc. zu testen
         int health = mySPR.getInt("health", 0);
+        //Update Progressbar
+        mProgressbar.setProgress(health);
         //Prüfe Zustand des Studigotchis
         checkState(health);
     }
+
     public void playBackgroundSound() {
         Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);
         startService(intent);
@@ -152,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
 
     private int getStudienTage() {
         SharedPreferences sharedPreferences = getSharedPreferences("mySPRFILE", 0);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
         long firstRunTime = sharedPreferences.getLong("firstRunTime", 0);
         long currentTime = System.currentTimeMillis();
         long timeAlive = currentTime - firstRunTime;
@@ -166,17 +166,17 @@ public class MainActivity extends AppCompatActivity {
      * Die Musik wird an bzw ausgeschaltet und
      * das icon des Buttons gewechselt dementsprechend
      */
-    private void playmusic(){
-        if(musicIsPlaying){
+    private void playmusic() {
+        if (musicIsPlaying) {
             stopBackgroundSound();
             musicButton.setBackgroundResource(R.drawable.speaker_off);
             musicIsPlaying = false;
-        }else {
+        } else {
             playBackgroundSound();
             musicButton.setBackgroundResource(R.drawable.speaker_on);
             musicIsPlaying = true;
         }
-}
+    }
 
     /**
      * Wird aufgerufen, wenn der Lernen Button gedrückt wird.
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
      * Über diesen Channel wird später an den User die Nachricht
      * gesendet, dass der Studigotchi wieder lernen kann
      */
-    private void createNotificationChannel(){
+    private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -213,24 +213,24 @@ public class MainActivity extends AppCompatActivity {
      * Dafür dient der Broadcast-Service, der zum Alarm-Zeitpunkt über den Notficationchannel
      * eine Nachricht verschickt
      */
-    private void startAlarm(){
+    private void startAlarm() {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this,0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
         long timeAtButtonClick = System.currentTimeMillis();
         //zu Testzwecken gibt es eine Benachrichtigung nach 10 Sekunden
-        long oneHourInMillies = 1000*10;
+        long oneHourInMillies = 1000 * 10;
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick+oneHourInMillies, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + oneHourInMillies, pendingIntent);
 
     }
 
     /**
      * openFirstActivity soll geöffnet werden, damit User seinen Namen eintragen kann
      */
-    private void openFirstRunActivity(){
+    private void openFirstRunActivity() {
         Intent intent = new Intent(this, firstRunActivity.class);
         startActivity(intent);
     }
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
     //Beim Pausieren/Schließen der App wird ein aktueller timestamp in den SharedPrefs gespeichert.
     protected void onPause() {
         super.onPause();
-            setQuitTime();
+        setQuitTime();
     }
 
     /**
@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Stop Backgroundmusic", Toast.LENGTH_SHORT).show();
     }
 
-    private void setQuitTime(){
+    private void setQuitTime() {
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         //Editor Klasse initialisieren
