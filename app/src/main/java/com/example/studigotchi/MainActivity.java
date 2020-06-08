@@ -72,21 +72,18 @@ public class MainActivity extends AppCompatActivity {
         boolean firstRun = mySPR.getBoolean("firstRun", true);
         //Abfrage, ob App das erste mal aufgerufen wurde
         if (firstRun) {
-
             //firstRun Boolean auf false
             editor.putBoolean("firstRun", false).commit();
-            // Startleben auf 100
-            editor.putInt("health", 100);
-            // Zeit des erstens Starts
-            long firstRunTime = System.currentTimeMillis();
-            editor.putLong("firstRunTime", firstRunTime).commit();
             //first RunActivity aufrufen, um Studinamen zu vergeben
             openFirstRunActivity();
         }
 
 
+        // Studientage anzeigen lassen
         TextView studientageTextView = findViewById(R.id.tv_studientage);
-        studientageTextView.setText("" + getStudienTage());
+        int studientage = getStudienTage();
+        studientageTextView.setText(String.valueOf(studientage));
+        editor.putInt("studientage", studientage);
 
         //name aus sharedpref in TextView schreiben
         TextView textview = findViewById(R.id.studiName);
@@ -95,8 +92,47 @@ public class MainActivity extends AppCompatActivity {
 
         //timestamp ausgeben (Nur als Nachweis, dass es funktioniert)
         TextView textView = findViewById(R.id.textView_date);
-        textView.setText("" + timestamp);
+        textView.setText(String.valueOf(timestamp));
         Log.d(TAG, "onResume");
+
+        //TODO Leben neu berechenen und abspeichern
+        editor.putInt("health", 40).commit(); //Um Tod etc. zu testen
+        int health = mySPR.getInt("health", 0);
+        //Prüfe Zustand des Studigotchis
+        checkState(health);
+    }
+
+
+    /**
+     * Aktualisiert die App und den Studi basierend auf seinem Leben
+     * Wird bei jedem Öffnen ausgeführt
+     *
+     * @param health Leben, dass der Studi beim öffnen hat
+     */
+    private void checkState(int health) {
+        if (health == 100) {
+            //Setze glückliches Bild, sound, ...
+            //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
+            mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
+        } else if (health > 50) {
+            //Setze normales Bild und sounds
+            mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_idle));
+        } else if (health < 50) {
+            // Setze unglückliches bild und sound
+            mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_sad));
+            if (health <= 10) {
+                //extrem kritischer Zustand
+            }
+            if (health <= 0) {
+                // Studi stirbt
+                // Deathscreen
+                // Neustart
+                Context context = MainActivity.this;
+                Class destinationActivity = DeathActivity.class;
+                Intent intent = new Intent(context, destinationActivity);
+                startActivity(intent);
+            }
+        }
     }
 
     private int getStudienTage() {

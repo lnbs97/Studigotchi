@@ -34,7 +34,7 @@ public class firstRunActivity extends AppCompatActivity {
     }
 
     //erst namen auslesen, diesen mit der Konstanten uebergeben und MainActivity starten
-    // Hier muss noch abgefangen werden, falls kein Name eingegeben wurde, und trotzdem enter gedrueckt wurde
+    // TODO Hier muss noch abgefangen werden, falls kein Name eingegeben wurde, und trotzdem enter gedrueckt wurde
     public void openMainActivity(){
         nameInput = findViewById(R.id.nameInput);
         name = nameInput.getText().toString();
@@ -44,6 +44,13 @@ public class firstRunActivity extends AppCompatActivity {
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         SharedPreferences.Editor editor = mySPR.edit();
         editor.putString("name", name).commit();
+
+        //Restliche Werte auf Startwert setzen
+        editor.putInt("health", 100);
+        editor.putInt("studientage", 0);
+        // Zeit des erstens Starts
+        long firstRunTime = System.currentTimeMillis();
+        editor.putLong("firstRunTime", firstRunTime).commit();
 
         //zurueck zur MainActivity
         Intent intent = new Intent(this, MainActivity.class);

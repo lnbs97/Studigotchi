@@ -6,4 +6,7 @@
     <string name="welcome">Herzlichen Willkommen bei Studigotchi!\n
     Jetzt geht die Reise deines Studigotchis los.\n
     Als erstes gib deinem Studigotchi einen Namen.</string>
+    <string name="deathMessage">Das wars dann wohl...</string>
+    <string name="deathMessage2">Du wurdest exmatrikuliert!</string>
+    <string name="tag_der_exmatrikulation">Tag der Exmatrikulation</string>
 </resources>
