@@ -34,10 +34,14 @@ public class firstRunActivity extends AppCompatActivity {
     }
 
     //erst namen auslesen, diesen mit der Konstanten uebergeben und MainActivity starten
-    // TODO Hier muss noch abgefangen werden, falls kein Name eingegeben wurde, und trotzdem enter gedrueckt wurde
     public void openMainActivity(){
         nameInput = findViewById(R.id.nameInput);
         name = nameInput.getText().toString();
+        //checken, ob ein Name eingegeben wurde, ansonsten return
+        if(name == null || name.isEmpty()){
+            showToast("Bitte gib einen Namen ein");
+            return;
+        }
         showToast(name);
 
         //SharedPref und Editor aufrufen und namen speichern
