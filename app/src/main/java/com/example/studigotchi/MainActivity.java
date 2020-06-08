@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +25,7 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     private ImageView mStudiImageView;
-    private Button mLearnButton;
+    private ImageButton mLearnButton;
     private Boolean musicIsPlaying = true;
     private static final String TAG = "MainActivity";
     private Long timestamp;
@@ -98,21 +99,15 @@ public class MainActivity extends AppCompatActivity {
         // Studientage anzeigen lassen
         TextView studientageTextView = findViewById(R.id.tv_studientage);
         int studientage = getStudienTage();
-        studientageTextView.setText(String.valueOf(studientage));
+        studientageTextView.setText("Tag " + studientage);
         editor.putInt("studientage", studientage);
 
         //name aus sharedpref in TextView schreiben
-        TextView textview = findViewById(R.id.studiName);
+        TextView textview = findViewById(R.id.tv_studi_name);
         textview.setText(mySPR.getString("name", "Dein Studigotchi"));
 
-
-        //timestamp ausgeben (Nur als Nachweis, dass es funktioniert)
-        TextView textView = findViewById(R.id.textView_date);
-        textView.setText(String.valueOf(timestamp));
-        Log.d(TAG, "onResume");
-
         //TODO Leben neu berechenen und abspeichern
-        editor.putInt("health", 0).commit(); //Um Tod etc. zu testen
+        editor.putInt("health", 100).commit(); //Um Tod etc. zu testen
         int health = mySPR.getInt("health", 0);
         //Prüfe Zustand des Studigotchis
         checkState(health);

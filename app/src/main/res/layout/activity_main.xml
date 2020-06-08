@@ -11,69 +11,105 @@
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="28dp"
         android:layout_height="26dp"
-        android:background="@drawable/speaker_on"/>
-
-    <ProgressBar
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:layout_margin="20dp"
-        android:progress="70" />
-
+        android:background="@drawable/speaker_on" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
+        android:layout_margin="20dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Name: " />
+            android:text="Name: "
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/studiName"
+            android:id="@+id/tv_studi_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Studigotchi" />
+            android:text="Studigotchi"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Studientage: "
-            android:textAlignment="textEnd" />
 
         <TextView
             android:id="@+id/tv_studientage"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="100" />
+            android:textAlignment="textEnd"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Tag 100" />
 
     </LinearLayout>
+
+    <ProgressBar
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:progress="70" />
 
     <ImageView
         android:id="@+id/imageView_studi"
         android:layout_width="296dp"
         android:layout_height="287dp"
         android:layout_gravity="center_horizontal"
+        android:layout_margin="20dp"
         android:src="@drawable/ic_studi_idle" />
 
-    <TextView
-        android:id="@+id/textView_date"
-        android:layout_width="334dp"
-        android:layout_height="18dp"
-        android:layout_margin="20dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/button_learn"
-        android:layout_width="344dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/learn" />
+        <ImageButton
+            android:id="@+id/button_learn"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_learn" />
 
+        <ImageButton
+            android:id="@+id/button_feed"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_eat" />
+
+        <ImageButton
+            android:id="@+id/button_sleep"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_sleep" />
+
+        <ImageButton
+            android:id="@+id/button_party"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_party" />
+    </LinearLayout>
 </LinearLayout>
