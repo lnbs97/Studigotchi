@@ -6,6 +6,13 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/button_music"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="28dp"
+        android:layout_height="26dp"
+        android:background="@drawable/speaker_on"/>
+
     <ProgressBar
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"

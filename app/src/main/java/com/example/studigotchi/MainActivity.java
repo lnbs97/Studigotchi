@@ -18,20 +18,25 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
 
     private ImageView mStudiImageView;
     private Button mLearnButton;
+    private Boolean musicIsPlaying = true;
     private static final String TAG = "MainActivity";
     private Long timestamp;
+    private Button musicButton;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         final MediaPlayer mpLearnSound = MediaPlayer.create(this, R.raw.learnsound);
+
 
         setTheme(R.style.AppTheme);
         try {
@@ -39,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //notificationChannel aufrufen
@@ -46,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
 
         mStudiImageView = findViewById(R.id.imageView_studi);
         mLearnButton = findViewById(R.id.button_learn);
+        musicButton = findViewById(R.id.button_music);
+
+        musicButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playmusic();
+            }
+        });
 
         mLearnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
     private void clearSharedPreferences() {
         this.getSharedPreferences("mySPRFILE", 0).edit().clear().commit();
     }
@@ -63,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
         super.onResume();
+        playBackgroundSound();
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         SharedPreferences.Editor editor = mySPR.edit();
@@ -96,10 +112,14 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onResume");
 
         //TODO Leben neu berechenen und abspeichern
-        editor.putInt("health", 40).commit(); //Um Tod etc. zu testen
+        editor.putInt("health", 0).commit(); //Um Tod etc. zu testen
         int health = mySPR.getInt("health", 0);
         //Prüfe Zustand des Studigotchis
         checkState(health);
+    }
+    public void playBackgroundSound() {
+        Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);
+        startService(intent);
     }
 
 
@@ -147,6 +167,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Wird aufgerufen, wenn der music-button gedrueckt wird.
+     * Die Musik wird an bzw ausgeschaltet und
+     * das icon des Buttons gewechselt dementsprechend
+     */
+    private void playmusic(){
+        if(musicIsPlaying){
+            stopBackgroundSound();
+            musicButton.setBackgroundResource(R.drawable.speaker_off);
+            musicIsPlaying = false;
+        }else {
+            playBackgroundSound();
+            musicButton.setBackgroundResource(R.drawable.speaker_on);
+            musicIsPlaying = true;
+        }
+}
+
+    /**
      * Wird aufgerufen, wenn der Lernen Button gedrückt wird.
      * Hier bitte ergänzen, was passieren soll, wenn der Studi lernt.
      */
@@ -156,6 +193,11 @@ public class MainActivity extends AppCompatActivity {
         startAlarm();
     }
 
+    /**
+     * Notificationchannel wird gestartet.
+     * Über diesen Channel wird später an den User die Nachricht
+     * gesendet, dass der Studigotchi wieder lernen kann
+     */
     private void createNotificationChannel(){
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -171,6 +213,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Alarm wird gestartet, indem ein PendingIntent aufgerufen wird.
+     * Dafür dient der Broadcast-Service, der zum Alarm-Zeitpunkt über den Notficationchannel
+     * eine Nachricht verschickt
+     */
     private void startAlarm(){
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -185,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * openFirstActivity soll geöffnet werden, damit User seinen Namen eintragen kann
+     */
     private void openFirstRunActivity(){
         Intent intent = new Intent(this, firstRunActivity.class);
         startActivity(intent);
@@ -194,7 +244,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
             setQuitTime();
+    }
 
+    /**
+     * Musik stoppen, indem man den entsprechenden Service schließt
+     */
+    public void stopBackgroundSound() {
+        Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);
+        stopService(intent);
+        Toast.makeText(getApplicationContext(), "Stop Backgroundmusic", Toast.LENGTH_SHORT).show();
     }
 
     private void setQuitTime(){
@@ -205,5 +263,11 @@ public class MainActivity extends AppCompatActivity {
         long quitTime = System.currentTimeMillis();
         //CurrentDate in mySPR speichern
         editor.putLong("quittime", quitTime).commit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopBackgroundSound();
     }
 }
