@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView mStudiImageView;
     private ImageButton mLearnButton;
-    private Boolean musicIsPlaying = true;
+    private Boolean musicIsPlaying;
     private static final String TAG = "MainActivity";
     private ProgressBar mProgressbar;
     private Button musicButton;
@@ -125,6 +125,8 @@ public class MainActivity extends AppCompatActivity {
     public void playBackgroundSound() {
         Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);
         startService(intent);
+        musicIsPlaying = true;
+        musicButton.setBackgroundResource(R.drawable.speaker_on);
     }
 
 
