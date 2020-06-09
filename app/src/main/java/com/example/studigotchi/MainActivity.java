@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private ProgressBar mProgressbar;
     private Button musicButton;
+    private Button infoButton;
 
 
     @Override
@@ -54,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
         mLearnButton = findViewById(R.id.button_learn);
         mProgressbar = findViewById(R.id.pb_learning);
         musicButton = findViewById(R.id.button_music);
+        infoButton = findViewById(R.id.button_info);
+
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openInfoActivity();
+            }
+        });
 
         musicButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,6 +234,14 @@ public class MainActivity extends AppCompatActivity {
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + oneHourInMillies, pendingIntent);
 
+    }
+
+    /**
+     * openInfoActivity oeffnet InfoActivity und ermoeglicht dem User, Infos ueber die App zu bekommen
+     */
+    private void openInfoActivity(){
+        Intent intent = new Intent(this, InfoActivity.class);
+        startActivity(intent);
     }
 
     /**
