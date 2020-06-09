@@ -11,6 +11,7 @@
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="28dp"
         android:layout_height="26dp"
+        android:layout_margin="10dp"
         android:background="@drawable/speaker_on" />
 
     <LinearLayout
