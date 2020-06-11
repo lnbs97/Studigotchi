@@ -18,10 +18,11 @@ public class SplashScreen extends AppCompatActivity {
                 .withTargetActivity(MainActivity.class)
                 .withSplashTimeOut(3500)
                 .withBackgroundColor(Color.parseColor("#1a1b29"))
-                .withHeaderText("Studigotchi")
-                .withFooterText("Viel Spaß beim Spielen")
+                .withHeaderText("\nStudigotchi")
+                .withFooterText("Viel Spaß beim Spielen\n")
                 .withBeforeLogoText("Studigotchi - Informatikprojekt 1\n\n")
                 .withAfterLogoText("\n\nvon Julian Dohmen, Jonas Feige, Leo Nobis")
+                //TODO Logo aendern
                 .withLogo(R.mipmap.ic_launcher_round);
         config.getHeaderTextView().setTextColor(Color.WHITE);
         config.getFooterTextView().setTextColor(Color.WHITE);

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
@@ -31,13 +32,16 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar mProgressbar;
     private Button musicButton;
     private Button infoButton;
+    private AnimationDrawable animation;
+    private AnimationDrawable animationLearn;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         final MediaPlayer mpLearnSound = MediaPlayer.create(this, R.raw.learnsound);
-
 
         setTheme(R.style.AppTheme);
         try {
@@ -46,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         //notificationChannel aufrufen
         createNotificationChannel();
 
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         musicButton = findViewById(R.id.button_music);
         infoButton = findViewById(R.id.button_info);
 
+        mStudiImageView.setBackgroundResource(R.drawable.studianimation);
+        animation = (AnimationDrawable) mStudiImageView.getBackground();
+
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // wenn User auf den Lautsprecher-Button klickt
+        // Musik an bzw- ausschalten
         musicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -71,24 +78,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // wenn User auf den Lernen-Button klickt
+        // Bilder aendern und Sound starten
         mLearnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 learn();
+                //TODO richtigen Sound einfuegen
                 mpLearnSound.start();
             }
         });
     }
 
-
+    /*
     private void clearSharedPreferences() {
         this.getSharedPreferences("mySPRFILE", 0).edit().clear().commit();
     }
+
+     */
 
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
         super.onResume();
         playBackgroundSound();
+
+
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         SharedPreferences.Editor editor = mySPR.edit();
@@ -140,20 +154,26 @@ public class MainActivity extends AppCompatActivity {
         if (health == 100) {
             //Setze glückliches Bild, sound, ...
             //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
-            mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
-        } else if (health > 50) {
+            animation.start();
+            //mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
+        } else if (health >= 50) {
             //Setze normales Bild und sounds
-            mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_idle));
+            //TODO Animation einfuegen?
+            mStudiImageView.setBackgroundResource(R.drawable.studi_idle);
         } else if (health < 50) {
             // Setze unglückliches bild und sound
-            mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_sad));
+            //TODO Animation einfuegen?
+            mStudiImageView.setBackgroundResource(R.drawable.studi_sad);
             if (health <= 10) {
                 //extrem kritischer Zustand
+                //TODO Animation einfuegen?
+                mStudiImageView.setBackgroundResource(R.drawable.studi_emergency);
             }
             if (health <= 0) {
                 // Studi stirbt
                 // Deathscreen
                 // Neustart
+                //TODO Sound einfuegen?
                 Context context = MainActivity.this;
                 Class destinationActivity = DeathActivity.class;
                 Intent intent = new Intent(context, destinationActivity);
@@ -195,7 +215,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private void learn() {
         // Bild ändern auf Lernen Bild
-        mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_learning));
+        mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
+        animation = (AnimationDrawable) mStudiImageView.getBackground();
+        animation.start();
         startAlarm();
     }
 
