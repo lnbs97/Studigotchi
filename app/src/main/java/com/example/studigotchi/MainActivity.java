@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+
 
 
 public class MainActivity extends AppCompatActivity {
@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private Button musicButton;
     private Button infoButton;
     private AnimationDrawable animation;
-    private AnimationDrawable animationLearn;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         mStudiImageView.setBackgroundResource(R.drawable.studianimation);
         animation = (AnimationDrawable) mStudiImageView.getBackground();
 
+        //wenn user auf info-button klickt
+        // info activity oeffnen
         infoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
