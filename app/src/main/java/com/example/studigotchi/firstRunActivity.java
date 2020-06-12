@@ -49,12 +49,15 @@ public class firstRunActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = mySPR.edit();
         editor.putString("name", name).commit();
 
+        /*
         //Restliche Werte auf Startwert setzen
         editor.putInt("health", 100);
         editor.putInt("studientage", 0);
         // Zeit des erstens Starts
         long firstRunTime = System.currentTimeMillis();
         editor.putLong("firstRunTime", firstRunTime).commit();
+
+         */
 
         //zurueck zur MainActivity
         Intent intent = new Intent(this, MainActivity.class);

@@ -16,7 +16,7 @@ public class SplashScreen extends AppCompatActivity {
         EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
                 .withFullScreen()
                 .withTargetActivity(MainActivity.class)
-                .withSplashTimeOut(2500)
+                .withSplashTimeOut(50)
                 .withBackgroundColor(Color.parseColor("#1a1b29"))
                 .withHeaderText("\nStudigotchi")
                 .withFooterText("Viel Spaß beim Spielen\n")

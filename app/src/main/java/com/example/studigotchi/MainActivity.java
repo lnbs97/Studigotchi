@@ -18,9 +18,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.animation.ObjectAnimator;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,10 +29,15 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mLearnButton;
     private Boolean musicIsPlaying;
     private static final String TAG = "MainActivity";
-    private ProgressBar mProgressbar;
     private Button musicButton;
     private Button infoButton;
-    private AnimationDrawable animation;
+    private AnimationDrawable animation_happy;
+    private ProgressBar pbHorizontal;
+    private TextView pbText;
+    int currentProgress;
+    long clickTime;
+    boolean stillLearning = false;
+    private Long quittime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +56,17 @@ public class MainActivity extends AppCompatActivity {
         //notificationChannel aufrufen
         createNotificationChannel();
 
+
         mStudiImageView = findViewById(R.id.imageView_studi);
         mLearnButton = findViewById(R.id.button_learn);
-        mProgressbar = findViewById(R.id.pb_learning);
         musicButton = findViewById(R.id.button_music);
         infoButton = findViewById(R.id.button_info);
+        pbHorizontal = findViewById(R.id.pbHorizontal);
+        pbText = findViewById(R.id.pbText);
+
 
         mStudiImageView.setBackgroundResource(R.drawable.studianimation);
-        animation = (AnimationDrawable) mStudiImageView.getBackground();
+        animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
 
         //wenn user auf info-button klickt
         // info activity oeffnen
@@ -90,6 +98,61 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    protected void startProg(){
+
+        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
+        SharedPreferences.Editor editor = mySPR.edit();
+
+        currentProgress = mySPR.getInt("currentProgress", 100);
+        quittime = mySPR.getLong("quittime", 0);
+        stillLearning = mySPR.getBoolean("stillLearning",false);
+
+        long learnClickTime = mySPR.getLong("learnClickTime", 0);
+        long currTime = System.currentTimeMillis()/1000L;
+
+        /*Studigotchi ist am lernen, Background Image wird auf Lernen gesetzt*/
+        if (stillLearning == true && currTime <= learnClickTime){
+            mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
+        }
+        //Wenn der Studi fertig gerlernt hat -> +30 Punkte und stillLearning auf false
+        if (stillLearning == true && currTime >= learnClickTime){
+            currentProgress += 30;
+            stillLearning = false;
+        }
+        //Wenn der Studi nicht mehr lernt, und nach "nach lernen Zeit" vorbei ist, Punktabzug
+        //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
+        if (stillLearning == false && currTime > (learnClickTime +10L)){
+            long passedTime = System.currentTimeMillis();
+            passedTime = (passedTime - quittime)/1000;
+            //Todo: Sekunden abändern zu Stunden
+                currentProgress -= passedTime * 0.83;
+            mStudiImageView.setBackgroundResource(R.drawable.studianimation);
+
+
+            }
+        updateText();
+        editor.putInt("currentProgress",currentProgress).commit();
+
+        if (!stillLearning){
+            checkState(currentProgress);
+        }
+
+        editor.putBoolean("stillLearning", stillLearning).commit();
+
+        ObjectAnimator.ofInt(pbHorizontal, "progress", currentProgress)
+                .setDuration(2000)
+                .start();
+
+    }
+
+    protected void updateText(){
+        if (currentProgress > 100){
+            currentProgress = 100;
+        }
+        pbText.setText(currentProgress + "/" +  pbHorizontal.getMax());
+    }
+
     /*
     private void clearSharedPreferences() {
         this.getSharedPreferences("mySPRFILE", 0).edit().clear().commit();
@@ -106,6 +169,10 @@ public class MainActivity extends AppCompatActivity {
         //Shared Prefs Datei öffnen
         SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
         SharedPreferences.Editor editor = mySPR.edit();
+
+        currentProgress = mySPR.getInt("currentProgress", 100);
+        stillLearning = mySPR.getBoolean("stillLearning",false);
+        pbText.setText(currentProgress + "/" +  pbHorizontal.getMax());
 
         boolean firstRun = mySPR.getBoolean("firstRun", true);
         //Abfrage, ob App das erste mal aufgerufen wurde
@@ -127,13 +194,9 @@ public class MainActivity extends AppCompatActivity {
         TextView textview = findViewById(R.id.tv_studi_name);
         textview.setText(mySPR.getString("name", "Dein Studigotchi"));
 
-        //TODO Leben neu berechenen und abspeichern
-        editor.putInt("health", 100).commit(); //Um Tod etc. zu testen
-        int health = mySPR.getInt("health", 0);
-        //Update Progressbar
-        mProgressbar.setProgress(health);
-        //Prüfe Zustand des Studigotchis
-        checkState(health);
+        if(!firstRun)
+         startProg();
+
     }
 
     public void playBackgroundSound() {
@@ -151,10 +214,10 @@ public class MainActivity extends AppCompatActivity {
      * @param health Leben, dass der Studi beim öffnen hat
      */
     private void checkState(int health) {
-        if (health == 100) {
+        if (health > 80) {
             //Setze glückliches Bild, sound, ...
             //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
-            animation.start();
+            animation_happy.start();
             //mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
         } else if (health >= 50) {
             //Setze normales Bild und sounds
@@ -174,10 +237,17 @@ public class MainActivity extends AppCompatActivity {
                 // Deathscreen
                 // Neustart
                 //TODO Sound einfuegen?
+                SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
+                SharedPreferences.Editor editor = mySPR.edit();
+                editor.putBoolean("stillLearning", false).commit();
+                editor.putInt("studientage",0).commit();
+                editor.putInt("currentProgress",100).commit();
+                editor.putBoolean("firstRun",true).commit();
                 Context context = MainActivity.this;
                 Class destinationActivity = DeathActivity.class;
                 Intent intent = new Intent(context, destinationActivity);
                 startActivity(intent);
+
             }
         }
     }
@@ -216,9 +286,17 @@ public class MainActivity extends AppCompatActivity {
     private void learn() {
         // Bild ändern auf Lernen Bild
         mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
-        animation = (AnimationDrawable) mStudiImageView.getBackground();
-        animation.start();
+        animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
+        animation_happy.start();
         startAlarm();
+
+        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
+        SharedPreferences.Editor editor = mySPR.edit();
+        clickTime = System.currentTimeMillis()/1000L;
+        long learnClickTime = clickTime + 10L ;
+        editor.putLong("learnClickTime", learnClickTime).commit();
+        stillLearning = true;
+        editor.putBoolean("stillLearning", stillLearning).commit();
     }
 
     /**
@@ -280,6 +358,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         setQuitTime();
+
+        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
+        SharedPreferences.Editor editor = mySPR.edit();
+
+        editor.putInt("currentProgress", currentProgress).commit();
+
     }
 
     /**
