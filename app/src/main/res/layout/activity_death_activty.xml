@@ -28,6 +28,12 @@
         android:layout_height="wrap_content"
         android:text="0" />
 
+    <TextView
+        android:id="@+id/tv_highscore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Dein bisher bester Studi war Leo mit 20 Tagen." />
+
     <Button
         android:id="@+id/btn_restart"
         android:layout_width="wrap_content"

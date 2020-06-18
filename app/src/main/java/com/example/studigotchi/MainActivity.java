@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mStudiImageView;
     private ImageButton mLearnButton;
     private Boolean musicIsPlaying;
-    private static final String TAG = "MainActivity";
+    private static final String LOG_TAG = "MainActivity";
     private Button musicButton;
     private Button infoButton;
     private AnimationDrawable animation_happy;
@@ -112,17 +112,17 @@ public class MainActivity extends AppCompatActivity {
         long currTime = System.currentTimeMillis() / 1000L;
 
         /*Studigotchi ist am lernen, Background Image wird auf Lernen gesetzt*/
-        if (stillLearning == true && currTime <= learnClickTime) {
+        if (stillLearning && currTime <= learnClickTime) {
             mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
         }
         //Wenn der Studi fertig gerlernt hat -> +30 Punkte und stillLearning auf false
-        if (stillLearning == true && currTime >= learnClickTime) {
+        if (stillLearning && currTime >= learnClickTime) {
             currentProgress += 30;
             stillLearning = false;
         }
         //Wenn der Studi nicht mehr lernt, und nach "nach lernen Zeit" vorbei ist, Punktabzug
         //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
-        if (stillLearning == false && currTime > (learnClickTime + 10L)) {
+        if (!stillLearning && currTime > (learnClickTime + 10L)) {
             long passedTime = System.currentTimeMillis();
             passedTime = (passedTime - quittime) / 1000;
             //Todo: Sekunden abändern zu Stunden
@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         TextView studientageTextView = findViewById(R.id.tv_studientage);
         int studientage = getStudienTage();
         studientageTextView.setText("Tag " + studientage);
-        editor.putInt("studientage", studientage);
+        editor.putInt("studientage", studientage).commit();
 
         //name aus sharedpref in TextView schreiben
         TextView textview = findViewById(R.id.tv_studi_name);

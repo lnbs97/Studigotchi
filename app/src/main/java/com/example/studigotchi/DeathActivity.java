@@ -14,6 +14,7 @@ import android.widget.TextView;
 public class DeathActivity extends AppCompatActivity {
 
     TextView mScoreTextView;
+    TextView mHighscoreTextView;
     Button mRestartButton;
 
     @Override
@@ -22,11 +23,24 @@ public class DeathActivity extends AppCompatActivity {
         setContentView(R.layout.activity_death_activty);
 
         mScoreTextView = findViewById(R.id.tv_deathscreen_score);
+        mHighscoreTextView = findViewById(R.id.tv_highscore);
         mRestartButton = findViewById(R.id.btn_restart);
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("mySPRFILE", 0);
         int studienTage = sharedPreferences.getInt("studientage", 0);
+        int highscoreTage = sharedPreferences.getInt("highscoreTage", 0);
+        String name = sharedPreferences.getString("name", "");
+
+        if (studienTage > highscoreTage) {
+            highscoreTage = studienTage;
+            sharedPreferences.edit().putInt("highscoreTage", highscoreTage).commit();
+            sharedPreferences.edit().putString("highscoreName", name).commit();
+        }
+
+        String highscoreName = sharedPreferences.getString("highscoreName", name);
+
+        mHighscoreTextView.setText("Dein bislang bester Studi war " + highscoreName + " mit " + highscoreTage + " Tagen.");
         mScoreTextView.setText(String.valueOf(studienTage));
         mRestartButton.setOnClickListener(new View.OnClickListener() {
             @Override
