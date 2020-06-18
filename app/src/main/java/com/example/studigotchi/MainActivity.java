@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView mStudiImageView;
     private ImageButton mLearnButton;
+    private ImageButton mFeedButton;
+    private ImageButton mSleepButton;
+    private ImageButton mPartyButton;
     private Boolean musicIsPlaying;
     private static final String LOG_TAG = "MainActivity";
     private Button musicButton;
@@ -44,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final MediaPlayer mpLearnSound = MediaPlayer.create(this, R.raw.learnsound);
+        final MediaPlayer mpLearnSound = MediaPlayer.create(this, R.raw.learn_sound);
+        final MediaPlayer mpButtonSound = MediaPlayer.create(this, R.raw.button_press);
+        final MediaPlayer mpSleepSound = MediaPlayer.create(this, R.raw.sleep_sound);
+        final MediaPlayer mpPartySound = MediaPlayer.create(this, R.raw.party_sound);
+        final MediaPlayer mpFeedSound = MediaPlayer.create(this, R.raw.feed_sound);
 
         setTheme(R.style.AppTheme);
         try {
@@ -56,15 +63,22 @@ public class MainActivity extends AppCompatActivity {
         //notificationChannel aufrufen
         createNotificationChannel();
 
-
-        mStudiImageView = findViewById(R.id.imageView_studi);
+        // Get action buttons
         mLearnButton = findViewById(R.id.button_learn);
+        mFeedButton = findViewById(R.id.button_feed);
+        mSleepButton = findViewById(R.id.button_sleep);
+        mPartyButton = findViewById(R.id.button_party);
+
+        // Get control buttons
         musicButton = findViewById(R.id.button_music);
         infoButton = findViewById(R.id.button_info);
+
+        // Get progress bar
         pbHorizontal = findViewById(R.id.pbHorizontal);
         pbText = findViewById(R.id.pbText);
 
-
+        // set up studi image
+        mStudiImageView = findViewById(R.id.imageView_studi);
         mStudiImageView.setBackgroundResource(R.drawable.studianimation);
         animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
 
@@ -93,7 +107,29 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 learn();
                 //TODO richtigen Sound einfuegen
+                mpButtonSound.start();
                 mpLearnSound.start();
+            }
+        });
+        mFeedButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mpButtonSound.start();
+                mpFeedSound.start();
+            }
+        });
+        mSleepButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mpButtonSound.start();
+                mpSleepSound.start();
+            }
+        });
+        mPartyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mpButtonSound.start();
+                mpPartySound.start();
             }
         });
     }
