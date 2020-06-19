@@ -119,14 +119,13 @@ public class MainActivity extends AppCompatActivity {
 
         isFirstRun = true;
         learnValue = 100;
-        energyValue = 100;
+        energyValue = 50;
+        learnClickTime = System.currentTimeMillis();
+        energyClickTime = System.currentTimeMillis();
         editor.putLong("onPauseTime", 0)
                 .putLong("firstRunTime", firstRunTime)
-                .putLong("learnClickTime", System.currentTimeMillis())
-                .putLong("eatClickTime", System.currentTimeMillis())
-                .putLong("sleepClickTime", System.currentTimeMillis())
-                .putLong("partyClickTime", System.currentTimeMillis())
-                .putLong("energyClickTime", System.currentTimeMillis())
+                .putLong("learnClickTime", learnClickTime)
+                .putLong("energyClickTime", energyClickTime)
                 .putBoolean("isLearning", false)
                 .putBoolean("isEating", false)
                 .putBoolean("isSleeping", false)
