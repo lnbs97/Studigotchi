@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
 
         firstRunTime = System.currentTimeMillis();
 
+        isFirstRun = true;
+        learnValue = 100;
         editor.putLong("onPauseTime", 0)
                 .putLong("firstRunTime", firstRunTime)
                 .putLong("learnClickTime", 0)
@@ -122,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
                 .putBoolean("isEating", false)
                 .putBoolean("isSleeping", false)
                 .putBoolean("isPartying", false)
-                .putBoolean("isFirstRun", true)
+                .putBoolean("isFirstRun", isFirstRun)
                 .putString("playerName", "EMPTY")
-                .putInt("learnValue", 100)
+                .putInt("learnValue", learnValue)
                 .putInt("energyValue", 100)
                 .putInt("studyDays", 0).commit();
     }
@@ -266,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         getSharedPrefs();
 
-        //playBackgroundSound();
+        playBackgroundSound();
 
         pbText.setText(learnValue + "/" + pbHorizontal.getMax());
 
