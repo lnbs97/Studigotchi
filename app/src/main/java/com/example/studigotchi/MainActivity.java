@@ -11,6 +11,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Button infoButton;
     private AnimationDrawable animation_happy;
     private ProgressBar pbHorizontal;
+    private ProgressBar pbEnergy;
     private TextView pbText;
 
     /* SharedPreferences Variablen START */
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private long firstRunTime;
 
     private long learnClickTime;
+    private long energyClickTime;
     private long eatClickTime;
     private long sleepClickTime;
     private long partyClickTime;
@@ -67,10 +70,11 @@ public class MainActivity extends AppCompatActivity {
         onPauseTime = sharedPreferences.getLong("onPauseTime", 0);
         firstRunTime = sharedPreferences.getLong("firstRunTime", 0);
 
-        learnClickTime = sharedPreferences.getLong("learnClickTime", 0);
-        eatClickTime = sharedPreferences.getLong("eatClickTime", 0);
-        sleepClickTime = sharedPreferences.getLong("sleepClickTime", 0);
-        partyClickTime = sharedPreferences.getLong("partyClickTime", 0);
+        learnClickTime = sharedPreferences.getLong("learnClickTime", System.currentTimeMillis());
+        eatClickTime = sharedPreferences.getLong("eatClickTime", System.currentTimeMillis());
+        sleepClickTime = sharedPreferences.getLong("sleepClickTime", System.currentTimeMillis());
+        partyClickTime = sharedPreferences.getLong("partyClickTime", System.currentTimeMillis());
+        energyClickTime = sharedPreferences.getLong("energyClickTime", System.currentTimeMillis());
 
         isLearning = sharedPreferences.getBoolean("isLearning", false);
         isEating = sharedPreferences.getBoolean("isEating", false);
@@ -81,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         playerName = sharedPreferences.getString("playerName", "EMPTY");
 
         learnValue = sharedPreferences.getInt("learnValue", 100);
-        energyValue = sharedPreferences.getInt("energyValue", 100);
+        energyValue = sharedPreferences.getInt("energyValue", 50);
         studyDays = sharedPreferences.getInt("studyDays", 0);
     }
 
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 .putLong("eatClickTime", eatClickTime)
                 .putLong("sleepClickTime", sleepClickTime)
                 .putLong("partyClickTime", partyClickTime)
+                .putLong("energyClickTime", energyClickTime)
                 .putBoolean("isLearning", isLearning)
                 .putBoolean("isEating", isEating)
                 .putBoolean("isSleeping", isSleeping)
@@ -114,12 +119,14 @@ public class MainActivity extends AppCompatActivity {
 
         isFirstRun = true;
         learnValue = 100;
+        energyValue = 100;
         editor.putLong("onPauseTime", 0)
                 .putLong("firstRunTime", firstRunTime)
-                .putLong("learnClickTime", 0)
-                .putLong("eatClickTime", 0)
-                .putLong("sleepClickTime", 0)
-                .putLong("partyClickTime", 0)
+                .putLong("learnClickTime", System.currentTimeMillis())
+                .putLong("eatClickTime", System.currentTimeMillis())
+                .putLong("sleepClickTime", System.currentTimeMillis())
+                .putLong("partyClickTime", System.currentTimeMillis())
+                .putLong("energyClickTime", System.currentTimeMillis())
                 .putBoolean("isLearning", false)
                 .putBoolean("isEating", false)
                 .putBoolean("isSleeping", false)
@@ -164,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Get progress bar
         pbHorizontal = findViewById(R.id.pbHorizontal);
+        pbEnergy = findViewById(R.id.pbEnergy);
         pbText = findViewById(R.id.pbText);
 
         // set up studi image
@@ -205,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isLearning || isSleeping || isEating || isPartying) return;
+                feed();
                 mpButtonSound.start();
                 mpFeedSound.start();
             }
@@ -229,26 +238,34 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected void startProg() {
-        long currentTime = System.currentTimeMillis() / 1000L;
+        long currentTime = System.currentTimeMillis();
 
-        /*Studigotchi ist am lernen, Background Image wird auf Lernen gesetzt*/
+        /*Studigotchi ist am lernen, Background Animation wird auf Lernen gesetzt*/
         if (isLearning && currentTime <= learnClickTime) {
             mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
+            mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
+            animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
         }
-        //Wenn der Studi fertig gerlernt hat -> +30 Punkte und stillLearning auf false
+        //Wenn der Studi fertig gerlernt hat
         if (isLearning && currentTime >= learnClickTime) {
             isLearning = false;
         }
-        //Wenn der Studi nicht mehr lernt, und nach "nach lernen Zeit" vorbei ist, Punktabzug
+        //Wenn der Studi nicht mehr lernt, und Zeit seit lernen vergangen ist, Punktabzug
         //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
-        if (!isLearning && currentTime > (learnClickTime + 10L)) {
-            long passedTime = System.currentTimeMillis();
-            passedTime = (passedTime - onPauseTime) / 1000;
+        if (!isLearning && currentTime > learnClickTime) {
+
+            long passedTimeLearning = (System.currentTimeMillis() - learnClickTime);
+            long passedTimeEnergy = (System.currentTimeMillis() - energyClickTime);
             //Todo: Sekunden abändern zu Stunden
-            learnValue -= passedTime * 0.83;
+            learnValue -= 0.5*(passedTimeLearning /1000);
+            energyValue -= 0.5*(passedTimeEnergy / 1000);
+
+            mStudiImageView = findViewById(R.id.imageView_studi);
             mStudiImageView.setBackgroundResource(R.drawable.studianimation);
+            animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
         }
         updateLearnPb();
+        updateEnergyPb();
 
         if (!isLearning) {
             checkState(learnValue);
@@ -261,8 +278,6 @@ public class MainActivity extends AppCompatActivity {
         getSharedPrefs();
 
         playBackgroundSound();
-
-        pbText.setText(learnValue + "/" + pbHorizontal.getMax());
 
         //Abfrage, ob App das erste mal aufgerufen wurde
         if (isFirstRun) {
@@ -363,16 +378,49 @@ public class MainActivity extends AppCompatActivity {
      * Hier bitte ergänzen, was passieren soll, wenn der Studi lernt.
      */
     private void learn() {
+        if(energyValue<=30){
+            Toast.makeText(getApplicationContext(), "Du brauchst Energie zum Lernen - Iss doch etwas!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Bild ändern auf Lernen Bild
         mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
         animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
         animation_happy.start();
+        //Alarm fuer Benachrichtigung starten
         startAlarm();
 
+
         learnValue += 30;
-        learnClickTime = System.currentTimeMillis() / 1000L + 10L;
+        energyValue -= 30;
+        learnClickTime = System.currentTimeMillis();
         isLearning = true;
         updateLearnPb();
+        updateEnergyPb();
+    }
+
+    private void feed(){
+        //Bild aendern auf essen
+        mStudiImageView.setBackgroundResource(R.drawable.studi_eating);
+        isEating = true;
+        energyValue += 10;
+        updateEnergyPb();
+        energyClickTime = System.currentTimeMillis();
+        //Alarm fuer Benachrichtigung starten
+        startAlarm();
+        //Handler ruft nach 3 Sekunden die naechste Methode auf
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                feedOver();
+            }
+        }, 3000);
+    }
+
+    private void feedOver(){
+        mStudiImageView = findViewById(R.id.imageView_studi);
+        mStudiImageView.setBackgroundResource(R.drawable.studianimation);
+        animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
+        isEating = false;
     }
 
     private void updateLearnPb(){
@@ -383,6 +431,17 @@ public class MainActivity extends AppCompatActivity {
                 .setDuration(2000)
                 .start();
         pbText.setText(learnValue + "/" + pbHorizontal.getMax());
+    }
+
+    private void updateEnergyPb(){
+        if (energyValue > 100) {
+            energyValue = 100;
+        }else if(energyValue < 0){
+            energyValue = 0;
+        }
+        ObjectAnimator.ofInt(pbEnergy, "progress", energyValue)
+                .setDuration(2000)
+                .start();
     }
     /**
      * Notificationchannel wird gestartet.
