@@ -253,11 +253,9 @@ public class MainActivity extends AppCompatActivity {
         //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
         if (!isLearning && currentTime > learnClickTime) {
 
-            long passedTimeLearning = (System.currentTimeMillis() - learnClickTime);
-            long passedTimeEnergy = (System.currentTimeMillis() - energyClickTime);
             //Todo: Sekunden abändern zu Stunden
-            learnValue -= 0.5*(passedTimeLearning /1000);
-            energyValue -= 0.5*(passedTimeEnergy / 1000);
+            learnValue -= 0.5*((System.currentTimeMillis() - learnClickTime) /1000);
+            energyValue -= 0.5*((System.currentTimeMillis() - energyClickTime)/ 1000);
 
             mStudiImageView = findViewById(R.id.imageView_studi);
             mStudiImageView.setBackgroundResource(R.drawable.studianimation);
@@ -282,6 +280,10 @@ public class MainActivity extends AppCompatActivity {
         if (isFirstRun) {
             //isFirstRun Boolean auf false
             isFirstRun = false;
+            /*Werte zuruecksetzen, falls User lange in der DeathActivity bleibt
+            Studigotchi wuerde dann sofort wieder sterben*/
+            learnClickTime = System.currentTimeMillis();
+            energyClickTime = System.currentTimeMillis();
             //first RunActivity aufrufen, um Studinamen zu vergeben
             openFirstRunActivity();
         }
