@@ -27,7 +27,7 @@ public class DeathActivity extends AppCompatActivity {
         mRestartButton = findViewById(R.id.btn_restart);
 
 
-        SharedPreferences sharedPreferences = getSharedPreferences("mySPRFILE", 0);
+        SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
         int studienTage = sharedPreferences.getInt("studientage", 0);
         int highscoreTage = sharedPreferences.getInt("highscoreTage", 0);
         String name = sharedPreferences.getString("name", "");
@@ -39,6 +39,10 @@ public class DeathActivity extends AppCompatActivity {
         }
 
         String highscoreName = sharedPreferences.getString("highscoreName", name);
+
+
+        long firstRunTime = System.currentTimeMillis();
+        sharedPreferences.edit().putLong("firstRunTime", firstRunTime);
 
         mHighscoreTextView.setText("Dein bislang bester Studi war " + highscoreName + " mit " + highscoreTage + " Tagen.");
         mScoreTextView.setText(String.valueOf(studienTage));

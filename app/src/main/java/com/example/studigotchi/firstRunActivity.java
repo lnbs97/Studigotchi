@@ -38,16 +38,14 @@ public class firstRunActivity extends AppCompatActivity {
         nameInput = findViewById(R.id.nameInput);
         name = nameInput.getText().toString();
         //checken, ob ein Name eingegeben wurde, ansonsten return
-        if(name == null || name.isEmpty()){
-            showToast("Bitte gib einen Namen ein");
+        if (name.isEmpty()) {
             return;
         }
-        showToast(name);
 
         //SharedPref und Editor aufrufen und namen speichern
-        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
+        SharedPreferences mySPR = getSharedPreferences("file", 0);
         SharedPreferences.Editor editor = mySPR.edit();
-        editor.putString("name", name).commit();
+        editor.putString("playerName", name).commit();
 
         // Zeit des ersten Starts
         long firstRunTime = System.currentTimeMillis();
@@ -58,8 +56,4 @@ public class firstRunActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //kleine Anzeige des Namens unten im Screen
-    private void showToast(String toast){
-        Toast.makeText(firstRunActivity.this, toast, Toast.LENGTH_SHORT).show();
-    }
 }

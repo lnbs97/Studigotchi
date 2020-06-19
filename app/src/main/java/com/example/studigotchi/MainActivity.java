@@ -37,10 +37,97 @@ public class MainActivity extends AppCompatActivity {
     private AnimationDrawable animation_happy;
     private ProgressBar pbHorizontal;
     private TextView pbText;
-    int currentProgress;
-    long clickTime;
-    boolean stillLearning = false;
-    private Long quittime;
+
+    /* SharedPreferences Variablen START */
+
+    private long onPauseTime;
+    private long firstRunTime;
+
+    private long learnClickTime;
+    private long eatClickTime;
+    private long sleepClickTime;
+    private long partyClickTime;
+
+    private boolean isLearning;
+    private boolean isEating;
+    private boolean isSleeping;
+    private boolean isPartying;
+    private boolean isFirstRun;
+
+    private String playerName;
+
+    private int learnValue;
+    private int energyValue;
+    private int studyDays;
+    /* SharedPreferences Variablen ENDE */
+
+    private void getSharedPrefs() {
+        SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
+
+        onPauseTime = sharedPreferences.getLong("onPauseTime", 0);
+        firstRunTime = sharedPreferences.getLong("firstRunTime", 0);
+
+        learnClickTime = sharedPreferences.getLong("learnClickTime", 0);
+        eatClickTime = sharedPreferences.getLong("eatClickTime", 0);
+        sleepClickTime = sharedPreferences.getLong("sleepClickTime", 0);
+        partyClickTime = sharedPreferences.getLong("partyClickTime", 0);
+
+        isLearning = sharedPreferences.getBoolean("isLearning", false);
+        isEating = sharedPreferences.getBoolean("isEating", false);
+        isSleeping = sharedPreferences.getBoolean("isSleeping", false);
+        isPartying = sharedPreferences.getBoolean("isPartying", false);
+        isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
+
+        playerName = sharedPreferences.getString("playerName", "EMPTY");
+
+        learnValue = sharedPreferences.getInt("learnValue", 100);
+        energyValue = sharedPreferences.getInt("energyValue", 100);
+        studyDays = sharedPreferences.getInt("studyDays", 0);
+    }
+
+    private void updateSharedPrefs() {
+        SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putLong("onPauseTime", onPauseTime)
+                .putLong("firstRunTime", firstRunTime)
+                .putLong("learnClickTime", learnClickTime)
+                .putLong("eatClickTime", eatClickTime)
+                .putLong("sleepClickTime", sleepClickTime)
+                .putLong("partyClickTime", partyClickTime)
+                .putBoolean("isLearning", isLearning)
+                .putBoolean("isEating", isEating)
+                .putBoolean("isSleeping", isSleeping)
+                .putBoolean("isPartying", isPartying)
+                .putBoolean("isFirstRun", isFirstRun)
+                .putString("playerName", playerName)
+                .putInt("learnValue", learnValue)
+                .putInt("energyValue", energyValue)
+                .putInt("studyDays", studyDays).commit();
+    }
+
+    private void resetSharedPrefs() {
+        SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        firstRunTime = System.currentTimeMillis();
+
+        editor.putLong("onPauseTime", 0)
+                .putLong("firstRunTime", firstRunTime)
+                .putLong("learnClickTime", 0)
+                .putLong("eatClickTime", 0)
+                .putLong("sleepClickTime", 0)
+                .putLong("partyClickTime", 0)
+                .putBoolean("isLearning", false)
+                .putBoolean("isEating", false)
+                .putBoolean("isSleeping", false)
+                .putBoolean("isPartying", false)
+                .putBoolean("isFirstRun", true)
+                .putString("playerName", "EMPTY")
+                .putInt("learnValue", 100)
+                .putInt("energyValue", 100)
+                .putInt("studyDays", 0).commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,85 +223,57 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected void startProg() {
-
-        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
-        SharedPreferences.Editor editor = mySPR.edit();
-
-        currentProgress = mySPR.getInt("currentProgress", 100);
-        quittime = mySPR.getLong("quittime", 0);
-        stillLearning = mySPR.getBoolean("stillLearning", false);
-
-        long learnClickTime = mySPR.getLong("learnClickTime", 0);
-        long currTime = System.currentTimeMillis() / 1000L;
+        long currentTime = System.currentTimeMillis() / 1000L;
 
         /*Studigotchi ist am lernen, Background Image wird auf Lernen gesetzt*/
-        if (stillLearning && currTime <= learnClickTime) {
+        if (isLearning && currentTime <= learnClickTime) {
             mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
         }
         //Wenn der Studi fertig gerlernt hat -> +30 Punkte und stillLearning auf false
-        if (stillLearning && currTime >= learnClickTime) {
-            currentProgress += 30;
-            stillLearning = false;
+        if (isLearning && currentTime >= learnClickTime) {
+            learnValue += 30;
+            isLearning = false;
         }
         //Wenn der Studi nicht mehr lernt, und nach "nach lernen Zeit" vorbei ist, Punktabzug
         //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
-        if (!stillLearning && currTime > (learnClickTime + 10L)) {
+        if (!isLearning && currentTime > (learnClickTime + 10L)) {
             long passedTime = System.currentTimeMillis();
-            passedTime = (passedTime - quittime) / 1000;
+            passedTime = (passedTime - onPauseTime) / 1000;
             //Todo: Sekunden abändern zu Stunden
-            currentProgress -= passedTime * 0.83;
+            learnValue -= passedTime * 0.83;
             mStudiImageView.setBackgroundResource(R.drawable.studianimation);
-
-
         }
-        updateText();
-        editor.putInt("currentProgress", currentProgress).commit();
+        updateLearnTextView();
 
-        if (!stillLearning) {
-            checkState(currentProgress);
+        if (!isLearning) {
+            checkState(learnValue);
         }
 
-        editor.putBoolean("stillLearning", stillLearning).commit();
-
-        ObjectAnimator.ofInt(pbHorizontal, "progress", currentProgress)
+        ObjectAnimator.ofInt(pbHorizontal, "progress", learnValue)
                 .setDuration(2000)
                 .start();
-
     }
 
-    protected void updateText() {
-        if (currentProgress > 100) {
-            currentProgress = 100;
+    protected void updateLearnTextView() {
+        if (learnValue > 100) {
+            learnValue = 100;
         }
-        pbText.setText(currentProgress + "/" + pbHorizontal.getMax());
+        pbText.setText(learnValue + "/" + pbHorizontal.getMax());
     }
-
-    /*
-    private void clearSharedPreferences() {
-        this.getSharedPreferences("mySPRFILE", 0).edit().clear().commit();
-    }
-
-     */
 
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
         super.onResume();
-        playBackgroundSound();
+        getSharedPrefs();
 
+        //playBackgroundSound();
 
-        //Shared Prefs Datei öffnen
-        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
-        SharedPreferences.Editor editor = mySPR.edit();
+        pbText.setText(learnValue + "/" + pbHorizontal.getMax());
 
-        currentProgress = mySPR.getInt("currentProgress", 100);
-        stillLearning = mySPR.getBoolean("stillLearning", false);
-        pbText.setText(currentProgress + "/" + pbHorizontal.getMax());
-
-        boolean firstRun = mySPR.getBoolean("firstRun", true);
         //Abfrage, ob App das erste mal aufgerufen wurde
-        if (firstRun) {
-            //firstRun Boolean auf false
-            editor.putBoolean("firstRun", false).commit();
+        if (isFirstRun) {
+            //isFirstRun Boolean auf false
+            isFirstRun = false;
             //first RunActivity aufrufen, um Studinamen zu vergeben
             openFirstRunActivity();
         }
@@ -222,17 +281,15 @@ public class MainActivity extends AppCompatActivity {
 
         // Studientage anzeigen lassen
         TextView studientageTextView = findViewById(R.id.tv_studientage);
-        int studientage = getStudienTage();
-        studientageTextView.setText("Tag " + studientage);
-        editor.putInt("studientage", studientage).commit();
+        studyDays = getStudienTage();
+        studientageTextView.setText("Tag " + studyDays);
 
         //name aus sharedpref in TextView schreiben
         TextView textview = findViewById(R.id.tv_studi_name);
-        textview.setText(mySPR.getString("name", "Dein Studigotchi"));
+        textview.setText(playerName);
 
-        if (!firstRun)
+        if (!isFirstRun)
             startProg();
-
     }
 
     public void playBackgroundSound() {
@@ -272,13 +329,7 @@ public class MainActivity extends AppCompatActivity {
             // Deathscreen
             // Neustart
             //TODO Sound einfuegen?
-            SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
-            SharedPreferences.Editor editor = mySPR.edit();
-            editor.putBoolean("stillLearning", false).commit();
-            editor.putInt("studientage", 0).commit();
-            currentProgress = 100;
-            editor.putInt("currentProgress", currentProgress).commit();
-            editor.putBoolean("firstRun", true).commit();
+            resetSharedPrefs();
             Context context = MainActivity.this;
             Class destinationActivity = DeathActivity.class;
             Intent intent = new Intent(context, destinationActivity);
@@ -289,13 +340,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private int getStudienTage() {
-        SharedPreferences sharedPreferences = getSharedPreferences("mySPRFILE", 0);
-        long firstRunTime = sharedPreferences.getLong("firstRunTime", 0);
         long currentTime = System.currentTimeMillis();
         long timeAlive = currentTime - firstRunTime;
 
-        int studienTage = (int) (timeAlive / 1000 / 60 / 60 / 4);
-        return studienTage;
+        studyDays = (int) (timeAlive / 1000 / 60 / 60 / 4);
+        return studyDays;
     }
 
     /**
@@ -326,13 +375,8 @@ public class MainActivity extends AppCompatActivity {
         animation_happy.start();
         startAlarm();
 
-        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
-        SharedPreferences.Editor editor = mySPR.edit();
-        clickTime = System.currentTimeMillis() / 1000L;
-        long learnClickTime = clickTime + 10L;
-        editor.putLong("learnClickTime", learnClickTime).commit();
-        stillLearning = true;
-        editor.putBoolean("stillLearning", stillLearning).commit();
+        learnClickTime = System.currentTimeMillis() / 1000L + 10L;
+        isLearning = true;
     }
 
     /**
@@ -368,9 +412,9 @@ public class MainActivity extends AppCompatActivity {
 
         long timeAtButtonClick = System.currentTimeMillis();
         //zu Testzwecken gibt es eine Benachrichtigung nach 10 Sekunden
-        long oneHourInMillies = 1000 * 10;
+        long oneHourInMillis = 1000 * 10;
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + oneHourInMillies, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + oneHourInMillis, pendingIntent);
 
     }
 
@@ -393,13 +437,8 @@ public class MainActivity extends AppCompatActivity {
     //Beim Pausieren/Schließen der App wird ein aktueller timestamp in den SharedPrefs gespeichert.
     protected void onPause() {
         super.onPause();
-        setQuitTime();
-
-        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
-        SharedPreferences.Editor editor = mySPR.edit();
-
-        editor.putInt("currentProgress", currentProgress).commit();
-
+        onPauseTime = System.currentTimeMillis();
+        updateSharedPrefs();
     }
 
     /**
@@ -411,19 +450,11 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Stop Backgroundmusic", Toast.LENGTH_SHORT).show();
     }
 
-    private void setQuitTime() {
-        //Shared Prefs Datei öffnen
-        SharedPreferences mySPR = getSharedPreferences("mySPRFILE", 0);
-        //Editor Klasse initialisieren
-        SharedPreferences.Editor editor = mySPR.edit();
-        long quitTime = System.currentTimeMillis();
-        //CurrentDate in mySPR speichern
-        editor.putLong("quittime", quitTime).commit();
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
         stopBackgroundSound();
     }
+
+
 }
