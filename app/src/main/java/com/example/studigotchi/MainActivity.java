@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         mLearnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isLearning || isSleeping || isEating || isPartying) return;
                 learn();
                 //TODO richtigen Sound einfuegen
                 mpButtonSound.start();
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         mFeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isLearning || isSleeping || isEating || isPartying) return;
                 mpButtonSound.start();
                 mpFeedSound.start();
             }
@@ -210,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
         mSleepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isLearning || isSleeping || isEating || isPartying) return;
                 mpButtonSound.start();
                 mpSleepSound.start();
             }
@@ -217,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
         mPartyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(isLearning || isSleeping || isEating || isPartying) return;
                 mpButtonSound.start();
                 mpPartySound.start();
             }
@@ -233,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
         }
         //Wenn der Studi fertig gerlernt hat -> +30 Punkte und stillLearning auf false
         if (isLearning && currentTime >= learnClickTime) {
-            learnValue += 30;
             isLearning = false;
         }
         //Wenn der Studi nicht mehr lernt, und nach "nach lernen Zeit" vorbei ist, Punktabzug
@@ -245,22 +248,11 @@ public class MainActivity extends AppCompatActivity {
             learnValue -= passedTime * 0.83;
             mStudiImageView.setBackgroundResource(R.drawable.studianimation);
         }
-        updateLearnTextView();
+        updateLearnPb();
 
         if (!isLearning) {
             checkState(learnValue);
         }
-
-        ObjectAnimator.ofInt(pbHorizontal, "progress", learnValue)
-                .setDuration(2000)
-                .start();
-    }
-
-    protected void updateLearnTextView() {
-        if (learnValue > 100) {
-            learnValue = 100;
-        }
-        pbText.setText(learnValue + "/" + pbHorizontal.getMax());
     }
 
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
@@ -377,10 +369,21 @@ public class MainActivity extends AppCompatActivity {
         animation_happy.start();
         startAlarm();
 
+        learnValue += 30;
         learnClickTime = System.currentTimeMillis() / 1000L + 10L;
         isLearning = true;
+        updateLearnPb();
     }
 
+    private void updateLearnPb(){
+        if (learnValue > 100) {
+            learnValue = 100;
+        }
+        ObjectAnimator.ofInt(pbHorizontal, "progress", learnValue)
+                .setDuration(2000)
+                .start();
+        pbText.setText(learnValue + "/" + pbHorizontal.getMax());
+    }
     /**
      * Notificationchannel wird gestartet.
      * Über diesen Channel wird später an den User die Nachricht
