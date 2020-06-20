@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 .putString("playerName", playerName)
                 .putInt("learnValue", learnValue)
                 .putInt("energyValue", energyValue)
-                .putInt("studyDays", studyDays).commit();
+                .putInt("studyDays", studyDays).apply();
     }
 
     private void resetSharedPrefs() {
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 .putString("playerName", "EMPTY")
                 .putInt("learnValue", learnValue)
                 .putInt("energyValue", 100)
-                .putInt("studyDays", 0).commit();
+                .putInt("studyDays", 0).apply();
     }
 
     @Override
