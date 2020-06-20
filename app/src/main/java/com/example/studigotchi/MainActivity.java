@@ -220,7 +220,8 @@ public class MainActivity extends AppCompatActivity {
         mSleepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLearning || isSleeping || isEating || isPartying) return;
+                if(isLearning || isEating || isPartying) return;
+                sleep();
                 mpButtonSound.start();
                 mpSleepSound.start();
             }
@@ -298,7 +299,12 @@ public class MainActivity extends AppCompatActivity {
         TextView textview = findViewById(R.id.tv_studi_name);
         textview.setText(playerName);
 
-        if (!isFirstRun)
+        if(isSleeping) {
+            mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
+            isSleeping = true;
+        } else if(isEating) {
+            isEating = false;
+        } else if (!isFirstRun)
             startProg();
     }
 
@@ -451,6 +457,31 @@ public class MainActivity extends AppCompatActivity {
         mSleepButton.setImageAlpha(0XFF);
         mLearnButton.setImageAlpha(0XFF);
         mFeedButton.setImageAlpha(0XFF);
+    }
+
+    private void sleep(){
+        if(!isSleeping) {
+            //Bild aendern auf essen
+            mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
+            isSleeping = true;
+            sleepClickTime = System.currentTimeMillis();
+            //TODO Button Bild ändern zu "Aufwecken-Bild"
+        }else {
+            long timeStudiWasSleeping = System.currentTimeMillis() - sleepClickTime;
+            energyValue += 0.5 * (timeStudiWasSleeping/1000);
+            updateEnergyPb();
+            energyClickTime = System.currentTimeMillis();
+            //Alarm fuer Benachrichtigung starten
+            startAlarm();
+
+            mStudiImageView = findViewById(R.id.imageView_studi);
+            mStudiImageView.setBackgroundResource(R.drawable.studianimation);
+            animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
+
+            learnClickTime = System.currentTimeMillis();
+            isSleeping = false;
+            //TODO Button Bild ändern zu "Einschlafen-Bild"
+        }
     }
 
     private void updateLearnPb(){
