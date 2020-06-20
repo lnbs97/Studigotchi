@@ -147,6 +147,8 @@ public class MainActivity extends AppCompatActivity {
         final MediaPlayer mpSleepSound = MediaPlayer.create(this, R.raw.sleep_sound);
         final MediaPlayer mpPartySound = MediaPlayer.create(this, R.raw.party_sound);
         final MediaPlayer mpFeedSound = MediaPlayer.create(this, R.raw.feed_sound);
+        final MediaPlayer mpWakeUpSound = MediaPlayer.create(this, R.raw.wake_up_sound);
+        final MediaPlayer mpYawningSound = MediaPlayer.create(this, R.raw.yawning_sound);
 
         setTheme(R.style.AppTheme);
         try {
@@ -203,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isLearning || isSleeping || isEating || isPartying) return;
                 learn();
-                //TODO richtigen Sound einfuegen
                 mpButtonSound.start();
                 mpLearnSound.start();
             }
@@ -222,8 +223,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(isLearning || isEating || isPartying) return;
                 sleep();
-                mpButtonSound.start();
-                mpSleepSound.start();
+                if (isSleeping) {
+                    mpButtonSound.start();
+                    mpSleepSound.start();
+                } else {
+                    mpButtonSound.start();
+                    mpWakeUpSound.start();
+                    mpYawningSound.start();
+                }
             }
         });
         mPartyButton.setOnClickListener(new View.OnClickListener() {
@@ -461,11 +468,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void sleep(){
         if(!isSleeping) {
-            //Bild aendern auf essen
+            //Bild aendern auf schlafen
             mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
             isSleeping = true;
             sleepClickTime = System.currentTimeMillis();
-            //TODO Button Bild ändern zu "Aufwecken-Bild"
+
+            //Button Bild ändern zu "Aufwecken-Bild"
+            mSleepButton.setImageResource(R.drawable.ic_wake_up);
+
+            //Alle Buttons außer sleep deaktivieren
+            disableButtons();
+            mSleepButton.setEnabled(true);
+            mSleepButton.setImageAlpha(0XFF);
         }else {
             long timeStudiWasSleeping = System.currentTimeMillis() - sleepClickTime;
             energyValue += 0.5 * (timeStudiWasSleeping/1000);
@@ -480,7 +494,12 @@ public class MainActivity extends AppCompatActivity {
 
             learnClickTime = System.currentTimeMillis();
             isSleeping = false;
-            //TODO Button Bild ändern zu "Einschlafen-Bild"
+
+            //Button Bild ändern zu "Einschlafen-Bild"
+            mSleepButton.setImageResource(R.drawable.ic_sleep);
+
+            //Alle Buttons aktivieren
+            enableButtons();
         }
     }
 
