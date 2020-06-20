@@ -302,7 +302,9 @@ public class MainActivity extends AppCompatActivity {
         if(isSleeping) {
             mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
             isSleeping = true;
-        }else if (!isFirstRun)
+        } else if(isEating) {
+            isEating = false;
+        } else if (!isFirstRun)
             startProg();
     }
 
