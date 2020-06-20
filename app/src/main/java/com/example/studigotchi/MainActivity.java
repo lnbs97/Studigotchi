@@ -406,6 +406,10 @@ public class MainActivity extends AppCompatActivity {
         energyValue += 10;
         updateEnergyPb();
         energyClickTime = System.currentTimeMillis();
+
+        //Buttons deaktivieren
+        disableButtons();
+
         //Alarm fuer Benachrichtigung starten
         startAlarm();
         //Handler ruft nach 3 Sekunden die naechste Methode auf
@@ -422,6 +426,31 @@ public class MainActivity extends AppCompatActivity {
         mStudiImageView.setBackgroundResource(R.drawable.studianimation);
         animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
         isEating = false;
+
+        //Buttons aktivieren
+        enableButtons();
+    }
+
+    private void disableButtons() {
+        mPartyButton.setEnabled(false);
+        mSleepButton.setEnabled(false);
+        mFeedButton.setEnabled(false);
+        mLearnButton.setEnabled(false);
+        mPartyButton.setImageAlpha(0X3F);
+        mSleepButton.setImageAlpha(0X3F);
+        mLearnButton.setImageAlpha(0X3F);
+        mFeedButton.setImageAlpha(0X3F);
+    }
+
+    private void enableButtons() {
+        mPartyButton.setEnabled(true);
+        mSleepButton.setEnabled(true);
+        mFeedButton.setEnabled(true);
+        mLearnButton.setEnabled(true);
+        mPartyButton.setImageAlpha(0XFF);
+        mSleepButton.setImageAlpha(0XFF);
+        mLearnButton.setImageAlpha(0XFF);
+        mFeedButton.setImageAlpha(0XFF);
     }
 
     private void updateLearnPb(){
