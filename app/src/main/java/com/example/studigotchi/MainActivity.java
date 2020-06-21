@@ -246,7 +246,8 @@ public class MainActivity extends AppCompatActivity {
     protected void startProg() {
         long currentTime = System.currentTimeMillis();
 
-        /*Studigotchi ist am lernen, Background Animation wird auf Lernen gesetzt*/
+        /*Studigotchi ist am lernen, Background Animation wird auf Lernen gesetzt,
+        * wenn 10 Sekunden seit learnClickTime vergangen sind*/
         if (isLearning && currentTime <= learnClickTime) {
             setAnimationLearn();
         }
@@ -261,6 +262,8 @@ public class MainActivity extends AppCompatActivity {
             //Todo: Sekunden abändern zu Stunden
             learnValue -= 0.5*((System.currentTimeMillis() - learnClickTime) /1000);
             energyValue -= 0.5*((System.currentTimeMillis() - energyClickTime)/ 1000);
+            learnClickTime = System.currentTimeMillis();
+            energyClickTime = System.currentTimeMillis();
         }
         updateLearnPb();
         updateEnergyPb();
@@ -408,7 +411,10 @@ public class MainActivity extends AppCompatActivity {
 
         learnValue += 30;
         energyValue -= 30;
-        learnClickTime = System.currentTimeMillis();
+        //TODO Logik / Name von LearnClickTime ueberdenken
+        //10 Sekunden hinzufuegen, die das Lernen dauert ->
+        // LearnClickTime ist eigtl falscher Name für die Logik
+        learnClickTime = System.currentTimeMillis() + 10000;
         isLearning = true;
         updateLearnPb();
         updateEnergyPb();
