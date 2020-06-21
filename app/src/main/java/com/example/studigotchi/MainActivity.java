@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "MainActivity";
     private Button musicButton;
     private Button infoButton;
-    private AnimationDrawable animation_happy;
+    private AnimationDrawable backgroundAnimation;
     private ProgressBar pbHorizontal;
     private ProgressBar pbEnergy;
     private TextView pbText;
@@ -175,10 +175,9 @@ public class MainActivity extends AppCompatActivity {
         pbEnergy = findViewById(R.id.pbEnergy);
         pbText = findViewById(R.id.pbText);
 
-        // set up studi image
+        // get studi image
         mStudiImageView = findViewById(R.id.imageView_studi);
-        mStudiImageView.setBackgroundResource(R.drawable.studianimation);
-        animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
+
 
         //wenn user auf info-button klickt
         // info activity oeffnen
@@ -249,9 +248,7 @@ public class MainActivity extends AppCompatActivity {
 
         /*Studigotchi ist am lernen, Background Animation wird auf Lernen gesetzt*/
         if (isLearning && currentTime <= learnClickTime) {
-            mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
-            mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
-            animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
+            setAnimationLearn();
         }
         //Wenn der Studi fertig gerlernt hat
         if (isLearning && currentTime >= learnClickTime) {
@@ -264,23 +261,32 @@ public class MainActivity extends AppCompatActivity {
             //Todo: Sekunden abändern zu Stunden
             learnValue -= 0.5*((System.currentTimeMillis() - learnClickTime) /1000);
             energyValue -= 0.5*((System.currentTimeMillis() - energyClickTime)/ 1000);
-
-            mStudiImageView = findViewById(R.id.imageView_studi);
-            mStudiImageView.setBackgroundResource(R.drawable.studianimation);
-            animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
         }
         updateLearnPb();
         updateEnergyPb();
 
         if (!isLearning) {
-            checkState(learnValue);
+            checkState();
         }
+    }
+    private void setAnimationHappy(){
+        mStudiImageView.setBackgroundResource(R.drawable.studianimation);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
+    }
+
+    private void setAnimationLearn(){
+        mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
     }
 
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
         super.onResume();
         getSharedPrefs();
+        //set up StudiImage
+        checkState();
 
         playBackgroundSound();
 
@@ -326,24 +332,22 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Aktualisiert die App und den Studi basierend auf seinem Leben
      * Wird bei jedem Öffnen ausgeführt
-     *
-     * @param health Leben, dass der Studi beim öffnen hat
      */
-    private void checkState(int health) {
-        if (health > 80) {
+    private void checkState() {
+        if (learnValue > 80) {
             //Setze glückliches Bild, sound, ...
             //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
-            animation_happy.start();
+            setAnimationHappy();
             //mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
-        } else if (health >= 50) {
+        } else if (learnValue >= 50) {
             //Setze normales Bild und sounds
             //TODO Animation einfuegen?
             mStudiImageView.setBackgroundResource(R.drawable.studi_idle);
-        } else if (health > 10) {
+        } else if (learnValue > 10) {
             // Setze unglückliches bild und sound
             //TODO Animation einfuegen?
             mStudiImageView.setBackgroundResource(R.drawable.studi_sad);
-        } else if (health > 0) {
+        } else if (learnValue > 0) {
             //extrem kritischer Zustand
             //TODO Animation einfuegen?
             mStudiImageView.setBackgroundResource(R.drawable.studi_emergency);
@@ -396,10 +400,8 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Du brauchst Energie zum Lernen - Iss doch etwas!", Toast.LENGTH_SHORT).show();
             return;
         }
-        // Bild ändern auf Lernen Bild
-        mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
-        animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
-        animation_happy.start();
+        // Bild ändern auf Animation lernen
+        setAnimationLearn();
         //Alarm fuer Benachrichtigung starten
         startAlarm();
 
@@ -435,9 +437,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void feedOver(){
-        mStudiImageView = findViewById(R.id.imageView_studi);
-        mStudiImageView.setBackgroundResource(R.drawable.studianimation);
-        animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
+        //Studi-Bild entsprechend ändern
+        checkState();
         isEating = false;
 
         //Buttons aktivieren
@@ -488,9 +489,8 @@ public class MainActivity extends AppCompatActivity {
             //Alarm fuer Benachrichtigung starten
             startAlarm();
 
-            mStudiImageView = findViewById(R.id.imageView_studi);
-            mStudiImageView.setBackgroundResource(R.drawable.studianimation);
-            animation_happy = (AnimationDrawable) mStudiImageView.getBackground();
+            //Studi-Bild entsprechend ändern
+            checkState();
 
             learnClickTime = System.currentTimeMillis();
             isSleeping = false;
