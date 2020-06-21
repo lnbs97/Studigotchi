@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isLearning || isSleeping || isEating || isPartying) return;
+                party();
                 mpButtonSound.start();
                 mpPartySound.start();
             }
@@ -250,16 +251,17 @@ public class MainActivity extends AppCompatActivity {
         * wenn 10 Sekunden seit learnClickTime vergangen sind*/
         if (isLearning && currentTime <= learnClickTime) {
             setAnimationLearn();
+            disableButtons();
         }
         //Wenn der Studi fertig gerlernt hat
         if (isLearning && currentTime >= learnClickTime) {
             isLearning = false;
+            enableButtons();
         }
         //Wenn der Studi nicht mehr lernt, und Zeit seit lernen vergangen ist, Punktabzug
         //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
         if (!isLearning && currentTime > learnClickTime) {
 
-            //Todo: Sekunden abändern zu Stunden
             learnValue -= 0.5*((System.currentTimeMillis() - learnClickTime) /1000);
             energyValue -= 0.5*((System.currentTimeMillis() - energyClickTime)/ 1000);
             learnClickTime = System.currentTimeMillis();
@@ -320,8 +322,21 @@ public class MainActivity extends AppCompatActivity {
             isSleeping = true;
         } else if(isEating) {
             isEating = false;
+            startProg();
+        }else if (isPartying){
+            checkPartyStatus();
+            startProg();
         } else if (!isFirstRun)
             startProg();
+    }
+
+    private void checkPartyStatus(){
+        long currentTime = System.currentTimeMillis();
+        if(currentTime > energyClickTime){
+            isPartying = false;
+            enableButtons();
+            checkState();
+        }
     }
 
     public void playBackgroundSound() {
@@ -337,6 +352,11 @@ public class MainActivity extends AppCompatActivity {
      * Wird bei jedem Öffnen ausgeführt
      */
     private void checkState() {
+        if(isPartying){
+            mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
+            disableButtons();
+            return;
+        }
         if (learnValue > 80) {
             //Setze glückliches Bild, sound, ...
             //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
@@ -418,6 +438,7 @@ public class MainActivity extends AppCompatActivity {
         isLearning = true;
         updateLearnPb();
         updateEnergyPb();
+        disableButtons();
     }
 
     private void feed(){
@@ -509,6 +530,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void party(){
+        mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
+        isPartying = true;
+        disableButtons();
+        energyValue += 40;
+        energyClickTime = System.currentTimeMillis() + 10000;
+        //während der Zeit, in der Party gemacht wird, werden keine Lernenpunkte abgezogen,
+        //also learnClickTime auf Partyende setzen
+        learnClickTime = System.currentTimeMillis() + 10000;
+        //Alarm fuer Benachrichtigung starten
+        startAlarm();
+        updateEnergyPb();
+    }
+
     private void updateLearnPb(){
         if (learnValue > 100) {
             learnValue = 100;
@@ -561,8 +596,8 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
         long timeAtButtonClick = System.currentTimeMillis();
-        //zu Testzwecken gibt es eine Benachrichtigung nach 10 Sekunden
-        long oneHourInMillis = 1000 * 10;
+        //zu Testzwecken gibt es eine Benachrichtigung nach 20 Sekunden klicken des Buttons
+        long oneHourInMillis = 1000 * 20;
 
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + oneHourInMillis, pendingIntent);
 
