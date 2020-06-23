@@ -548,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
             learnClickTime = System.currentTimeMillis();
             isSleeping = false;
 
-            //TODO Fehler über Fehler
+            //TODO Fehler über
             //Studi-Bild entsprechend ändern
             updateImage();
             //Button Bild ändern zu "Einschlafen-Bild"
