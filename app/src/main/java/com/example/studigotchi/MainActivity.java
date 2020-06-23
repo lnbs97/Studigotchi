@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         mLearnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLearning || isSleeping || isEating || isPartying) return;
+                if (isLearning || isSleeping || isEating || isPartying) return;
                 learn();
                 mpButtonSound.start();
                 mpLearnSound.start();
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
         mFeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLearning || isSleeping || isEating || isPartying) return;
+                if (isLearning || isSleeping || isEating || isPartying) return;
                 feed();
                 mpButtonSound.start();
                 mpFeedSound.start();
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         mSleepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLearning || isEating || isPartying) return;
+                if (isLearning || isEating || isPartying) return;
                 sleep();
                 if (isSleeping) {
                     mpButtonSound.start();
@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         mPartyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isLearning || isSleeping || isEating || isPartying) return;
+                if (isLearning || isSleeping || isEating || isPartying) return;
                 party();
                 mpButtonSound.start();
                 mpPartySound.start();
@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
         long currentTime = System.currentTimeMillis();
 
         /*Studigotchi ist am lernen, Background Animation wird auf Lernen gesetzt,
-        * wenn 10 Sekunden seit learnClickTime vergangen sind*/
+         * wenn 10 Sekunden seit learnClickTime vergangen sind*/
         if (isLearning && currentTime <= learnClickTime) {
             setAnimationLearn();
             disableButtons();
@@ -262,25 +262,23 @@ public class MainActivity extends AppCompatActivity {
         //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
         if (!isLearning && currentTime > learnClickTime) {
 
-            learnValue -= 0.5*((System.currentTimeMillis() - learnClickTime) /1000);
-            energyValue -= 0.5*((System.currentTimeMillis() - energyClickTime)/ 1000);
+            learnValue -= 0.5 * ((System.currentTimeMillis() - learnClickTime) / 1000);
+            energyValue -= 0.5 * ((System.currentTimeMillis() - energyClickTime) / 1000);
             learnClickTime = System.currentTimeMillis();
             energyClickTime = System.currentTimeMillis();
         }
         updateLearnPb();
         updateEnergyPb();
 
-        if (!isLearning) {
-            checkState();
-        }
     }
-    private void setAnimationHappy(){
+
+    private void setAnimationHappy() {
         mStudiImageView.setBackgroundResource(R.drawable.studianimation);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
-    private void setAnimationLearn(){
+    private void setAnimationLearn() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
@@ -290,8 +288,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getSharedPrefs();
-        //set up StudiImage
-        checkState();
 
         playBackgroundSound();
 
@@ -307,6 +303,8 @@ public class MainActivity extends AppCompatActivity {
             openFirstRunActivity();
         }
 
+        //set up StudiImage
+        checkState();
 
         // Studientage anzeigen lassen
         TextView studientageTextView = findViewById(R.id.tv_studientage);
@@ -317,25 +315,66 @@ public class MainActivity extends AppCompatActivity {
         TextView textview = findViewById(R.id.tv_studi_name);
         textview.setText(playerName);
 
-        if(isSleeping) {
+        if (isSleeping) {
             mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
             isSleeping = true;
-        } else if(isEating) {
+            //Button Bild ändern zu "Aufwecken-Bild"
+            mSleepButton.setImageResource(R.drawable.ic_wake_up);
+
+            //Alle Buttons außer sleep deaktivieren
+            disableButtons();
+            mSleepButton.setEnabled(true);
+            mSleepButton.setImageAlpha(0XFF);
+        } else if (isEating) {
             isEating = false;
             startProg();
-        }else if (isPartying){
+        } else if (isPartying) {
             checkPartyStatus();
             startProg();
         } else if (!isFirstRun)
             startProg();
     }
 
-    private void checkPartyStatus(){
+    private void checkPartyStatus() {
         long currentTime = System.currentTimeMillis();
-        if(currentTime > energyClickTime){
+        if (currentTime > energyClickTime) {
             isPartying = false;
             enableButtons();
-            checkState();
+        }
+    }
+
+    private void updateImage() {
+
+        if (!isLearning && !isPartying && !isSleeping && !isEating) {
+            if (learnValue > 80) {
+                //Setze glückliches Bild, sound, ...
+                //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
+                setAnimationHappy();
+                //mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
+            } else if (learnValue >= 50) {
+                //Setze normales Bild und sounds
+                //TODO Animation einfuegen?
+                mStudiImageView.setBackgroundResource(R.drawable.studi_idle);
+            } else if (learnValue > 10) {
+                // Setze unglückliches bild und sound
+                //TODO Animation einfuegen?
+                mStudiImageView.setBackgroundResource(R.drawable.studi_sad);
+            } else if (learnValue > 0) {
+                //extrem kritischer Zustand
+                //TODO Animation einfuegen?
+                mStudiImageView.setBackgroundResource(R.drawable.studi_emergency);
+            } else {
+                // Studi stirbt
+                // Deathscreen
+                // Neustart
+                //TODO Sound einfuegen?
+                resetSharedPrefs();
+                Context context = MainActivity.this;
+                Class destinationActivity = DeathActivity.class;
+                Intent intent = new Intent(context, destinationActivity);
+                startActivity(intent);
+
+            }
         }
     }
 
@@ -352,40 +391,29 @@ public class MainActivity extends AppCompatActivity {
      * Wird bei jedem Öffnen ausgeführt
      */
     private void checkState() {
-        if(isPartying){
+        if (isSleeping) {
+            mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
+            //Button Bild ändern zu "Aufwecken-Bild"
+            mSleepButton.setImageResource(R.drawable.ic_wake_up);
+
+            //Alle Buttons außer sleep deaktivieren
+            disableButtons();
+            mSleepButton.setEnabled(true);
+            mSleepButton.setImageAlpha(0XFF);
+        } else if (isEating) {
+            isEating = false;
+            startProg();
+        } else if (isPartying) {
             mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
             disableButtons();
-            return;
+            checkPartyStatus();
+            if (!isPartying) {
+                startProg();
+            }
+        } else if (isLearning) {
+            startProg();
         }
-        if (learnValue > 80) {
-            //Setze glückliches Bild, sound, ...
-            //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
-            setAnimationHappy();
-            //mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
-        } else if (learnValue >= 50) {
-            //Setze normales Bild und sounds
-            //TODO Animation einfuegen?
-            mStudiImageView.setBackgroundResource(R.drawable.studi_idle);
-        } else if (learnValue > 10) {
-            // Setze unglückliches bild und sound
-            //TODO Animation einfuegen?
-            mStudiImageView.setBackgroundResource(R.drawable.studi_sad);
-        } else if (learnValue > 0) {
-            //extrem kritischer Zustand
-            //TODO Animation einfuegen?
-            mStudiImageView.setBackgroundResource(R.drawable.studi_emergency);
-        } else {
-            // Studi stirbt
-            // Deathscreen
-            // Neustart
-            //TODO Sound einfuegen?
-            resetSharedPrefs();
-            Context context = MainActivity.this;
-            Class destinationActivity = DeathActivity.class;
-            Intent intent = new Intent(context, destinationActivity);
-            startActivity(intent);
-
-        }
+        updateImage();
     }
 
 
@@ -419,7 +447,7 @@ public class MainActivity extends AppCompatActivity {
      * Hier bitte ergänzen, was passieren soll, wenn der Studi lernt.
      */
     private void learn() {
-        if(energyValue<=30){
+        if (energyValue <= 30) {
             Toast.makeText(getApplicationContext(), "Du brauchst Energie zum Lernen - Iss doch etwas!", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -441,7 +469,7 @@ public class MainActivity extends AppCompatActivity {
         disableButtons();
     }
 
-    private void feed(){
+    private void feed() {
         //Bild aendern auf essen
         mStudiImageView.setBackgroundResource(R.drawable.studi_eating);
         isEating = true;
@@ -463,7 +491,7 @@ public class MainActivity extends AppCompatActivity {
         }, 3000);
     }
 
-    private void feedOver(){
+    private void feedOver() {
         //Studi-Bild entsprechend ändern
         checkState();
         isEating = false;
@@ -494,8 +522,8 @@ public class MainActivity extends AppCompatActivity {
         mFeedButton.setImageAlpha(0XFF);
     }
 
-    private void sleep(){
-        if(!isSleeping) {
+    private void sleep() {
+        if (!isSleeping) {
             //Bild aendern auf schlafen
             mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
             isSleeping = true;
@@ -508,20 +536,19 @@ public class MainActivity extends AppCompatActivity {
             disableButtons();
             mSleepButton.setEnabled(true);
             mSleepButton.setImageAlpha(0XFF);
-        }else {
+        } else {
             long timeStudiWasSleeping = System.currentTimeMillis() - sleepClickTime;
-            energyValue += 0.5 * (timeStudiWasSleeping/1000);
+            energyValue += 0.5 * (timeStudiWasSleeping / 1000);
             updateEnergyPb();
             energyClickTime = System.currentTimeMillis();
             //Alarm fuer Benachrichtigung starten
             startAlarm();
 
-            //Studi-Bild entsprechend ändern
-            checkState();
-
             learnClickTime = System.currentTimeMillis();
             isSleeping = false;
 
+            //Studi-Bild entsprechend ändern
+            updateImage();
             //Button Bild ändern zu "Einschlafen-Bild"
             mSleepButton.setImageResource(R.drawable.ic_sleep);
 
@@ -530,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void party(){
+    private void party() {
         mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
         isPartying = true;
         disableButtons();
@@ -544,7 +571,7 @@ public class MainActivity extends AppCompatActivity {
         updateEnergyPb();
     }
 
-    private void updateLearnPb(){
+    private void updateLearnPb() {
         if (learnValue > 100) {
             learnValue = 100;
         }
@@ -554,16 +581,17 @@ public class MainActivity extends AppCompatActivity {
         pbText.setText(learnValue + "/" + pbHorizontal.getMax());
     }
 
-    private void updateEnergyPb(){
+    private void updateEnergyPb() {
         if (energyValue > 100) {
             energyValue = 100;
-        }else if(energyValue < 0){
+        } else if (energyValue < 0) {
             energyValue = 0;
         }
         ObjectAnimator.ofInt(pbEnergy, "progress", energyValue)
                 .setDuration(2000)
                 .start();
     }
+
     /**
      * Notificationchannel wird gestartet.
      * Über diesen Channel wird später an den User die Nachricht
