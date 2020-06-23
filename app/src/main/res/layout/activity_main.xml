@@ -32,6 +32,7 @@
             android:layout_margin="5dp"
             android:layout_marginBottom="5dp"
             android:text="info" />
+
     </LinearLayout>
 
     <LinearLayout
