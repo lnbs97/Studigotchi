@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,6 +28,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    /* Bestimmt wie schnell Attribute sinken
+        hoher Faktor = sinken schneller
+        Vorher stand es auf 1000
+     */
+    private static final long TIME_FACTOR = 1000;
     private ImageView mStudiImageView;
     private ImageButton mLearnButton;
     private ImageButton mFeedButton;
@@ -36,9 +43,13 @@ public class MainActivity extends AppCompatActivity {
     private Button musicButton;
     private Button infoButton;
     private AnimationDrawable backgroundAnimation;
-    private ProgressBar pbHorizontal;
+    private ProgressBar pbLearn;
     private ProgressBar pbEnergy;
-    private TextView pbText;
+    private TextView pbLeanText;
+
+    private Thread updateUIThread;
+    private boolean isAppInForegeround;
+    private boolean isUIThreadRunning;
 
     /* SharedPreferences Variablen START */
 
@@ -62,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
     private int learnValue;
     private int energyValue;
     private int studyDays;
+
+
+
     /* SharedPreferences Variablen ENDE */
 
     private void getSharedPrefs() {
@@ -141,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isAppInForegeround = true;
+
 
         final MediaPlayer mpLearnSound = MediaPlayer.create(this, R.raw.learn_sound);
         final MediaPlayer mpButtonSound = MediaPlayer.create(this, R.raw.button_press);
@@ -171,13 +187,15 @@ public class MainActivity extends AppCompatActivity {
         infoButton = findViewById(R.id.button_info);
 
         // Get progress bar
-        pbHorizontal = findViewById(R.id.pbHorizontal);
+        pbLearn = findViewById(R.id.pbHorizontal);
         pbEnergy = findViewById(R.id.pbEnergy);
-        pbText = findViewById(R.id.pbText);
+        pbLeanText = findViewById(R.id.pbText);
 
         // get studi image
         mStudiImageView = findViewById(R.id.imageView_studi);
 
+        startUIThread();
+        isUIThreadRunning = true;
 
         //wenn user auf info-button klickt
         // info activity oeffnen
@@ -243,8 +261,38 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void startUIThread() {
+        if (!isUIThreadRunning) {
+            updateUIThread = new Thread() {
+                @Override
+                public void run() {
+                    while (isAppInForegeround) {
+                        try {
+                            sleep(1000);
+                            updateLearnValue();
+                            updateEnergyValue();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    pbLearn.setProgress(learnValue);
+                                    pbLeanText.setText(learnValue + "/100");
+                                    pbEnergy.setProgress(energyValue);
+                                }
+                            });
+                            Log.i(LOG_TAG, "learnValue: " + learnValue);
+                            Log.i(LOG_TAG, "energyValue: " + energyValue);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-    protected void startProg() {
+                    }
+                }
+            };
+            updateUIThread.start();
+        }
+    }
+
+    protected void startProgress() {
         long currentTime = System.currentTimeMillis();
 
         /*Studigotchi ist am lernen, Background Animation wird auf Lernen gesetzt,
@@ -261,15 +309,27 @@ public class MainActivity extends AppCompatActivity {
         //Wenn der Studi nicht mehr lernt, und Zeit seit lernen vergangen ist, Punktabzug
         //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
         if (!isLearning && currentTime > learnClickTime) {
-
-            learnValue -= 0.5 * ((System.currentTimeMillis() - learnClickTime) / 1000);
-            energyValue -= 0.5 * ((System.currentTimeMillis() - energyClickTime) / 1000);
+            learnValue -= 0.5 * ((System.currentTimeMillis() - learnClickTime) / TIME_FACTOR);
+            energyValue -= 0.5 * ((System.currentTimeMillis() - energyClickTime) / TIME_FACTOR);
             learnClickTime = System.currentTimeMillis();
             energyClickTime = System.currentTimeMillis();
         }
         updateLearnPb();
         updateEnergyPb();
 
+    }
+
+    private void updateEnergyValue() {
+        energyValue -= 0.5 * ((System.currentTimeMillis() - energyClickTime) / TIME_FACTOR);
+        energyClickTime = System.currentTimeMillis();
+    }
+
+    private void updateLearnValue() {
+        long currentTime = System.currentTimeMillis();
+        if (!isLearning && currentTime > learnClickTime) {
+            learnValue -= 0.5 * ((System.currentTimeMillis() - learnClickTime) / TIME_FACTOR);
+            learnClickTime = System.currentTimeMillis();
+        }
     }
 
     private void setAnimationHappy() {
@@ -288,6 +348,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getSharedPrefs();
+
+        isAppInForegeround = true;
+        startUIThread();
+        isUIThreadRunning = true;
 
         playBackgroundSound();
 
@@ -327,12 +391,12 @@ public class MainActivity extends AppCompatActivity {
             mSleepButton.setImageAlpha(0XFF);
         } else if (isEating) {
             isEating = false;
-            startProg();
+            startProgress();
         } else if (isPartying) {
             checkPartyStatus();
-            startProg();
+            startProgress();
         } else if (!isFirstRun)
-            startProg();
+            startProgress();
     }
 
     private void checkPartyStatus() {
@@ -402,16 +466,16 @@ public class MainActivity extends AppCompatActivity {
             mSleepButton.setImageAlpha(0XFF);
         } else if (isEating) {
             isEating = false;
-            startProg();
+            startProgress();
         } else if (isPartying) {
             mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
             disableButtons();
             checkPartyStatus();
             if (!isPartying) {
-                startProg();
+                startProgress();
             }
         } else if (isLearning) {
-            startProg();
+            startProgress();
         }
         updateImage();
     }
@@ -456,7 +520,6 @@ public class MainActivity extends AppCompatActivity {
         //Alarm fuer Benachrichtigung starten
         startAlarm();
 
-        //TODO test9999
 
         learnValue += 30;
         energyValue -= 30;
@@ -577,10 +640,10 @@ public class MainActivity extends AppCompatActivity {
         if (learnValue > 100) {
             learnValue = 100;
         }
-        ObjectAnimator.ofInt(pbHorizontal, "progress", learnValue)
+        ObjectAnimator.ofInt(pbLearn, "progress", learnValue)
                 .setDuration(2000)
                 .start();
-        pbText.setText(learnValue + "/" + pbHorizontal.getMax());
+        pbLeanText.setText(learnValue + "/" + pbLearn.getMax());
     }
 
     private void updateEnergyPb() {
@@ -652,6 +715,8 @@ public class MainActivity extends AppCompatActivity {
     //Beim Pausieren/Schließen der App wird ein aktueller timestamp in den SharedPrefs gespeichert.
     protected void onPause() {
         super.onPause();
+        isAppInForegeround = false;
+        isUIThreadRunning = false;
         onPauseTime = System.currentTimeMillis();
         updateSharedPrefs();
     }
@@ -670,6 +735,4 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         stopBackgroundSound();
     }
-
-
 }
