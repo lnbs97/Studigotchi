@@ -456,6 +456,7 @@ public class MainActivity extends AppCompatActivity {
         //Alarm fuer Benachrichtigung starten
         startAlarm();
 
+        //TODO test9999
 
         learnValue += 30;
         energyValue -= 30;
