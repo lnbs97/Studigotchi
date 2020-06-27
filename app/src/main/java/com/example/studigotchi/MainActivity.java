@@ -271,6 +271,8 @@ public class MainActivity extends AppCompatActivity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
+                                    if(isLearning || isPartying)
+                                        checkState();
                                     updateEnergyPb();
                                     updateLearnPb();
                                     updateImage();
@@ -609,9 +611,11 @@ public class MainActivity extends AppCompatActivity {
     private void updateLearnPb() {
         if (learnValue > 100) {
             learnValue = 100;
-        }
+        }else if(learnValue<0)
+            learnValue=0;
+
         ObjectAnimator.ofInt(pbLearn, "progress", learnValue)
-                .setDuration(2000)
+                .setDuration(800)
                 .start();
         pbLeanText.setText(learnValue + "/" + pbLearn.getMax());
     }
@@ -623,7 +627,7 @@ public class MainActivity extends AppCompatActivity {
             energyValue = 0;
         }
         ObjectAnimator.ofInt(pbEnergy, "progress", energyValue)
-                .setDuration(2000)
+                .setDuration(800)
                 .start();
     }
 
