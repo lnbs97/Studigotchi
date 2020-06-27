@@ -65,6 +65,7 @@ public class firstRunActivity extends AppCompatActivity {
         name = nameInput.getText().toString();
         //checken, ob ein Name eingegeben wurde, ansonsten return
         if (name.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Gib einen Namen ein", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -77,7 +78,10 @@ public class firstRunActivity extends AppCompatActivity {
                 //Zeit des ersten Starts
         .putLong("firstRunTime", firstRunTime)
                 //Spielgeschwindigkeit einstellen
-        .putInt("gameSpeed", gameSpeed).apply();
+        .putInt("gameSpeed", gameSpeed)
+        .putLong("learnEndTime", System.currentTimeMillis())
+        .putLong("energyClickTime",System.currentTimeMillis()).apply();
+
 
         //zurueck zur MainActivity
         Intent intent = new Intent(this, MainActivity.class);

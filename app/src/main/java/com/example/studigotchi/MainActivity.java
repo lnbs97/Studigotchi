@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private AnimationDrawable backgroundAnimation;
     private ProgressBar pbLearn;
     private ProgressBar pbEnergy;
-    private TextView pbLeanText;
+    private TextView pbLearnText;
+    private TextView pbEnergyText;
 
     private Thread updateUIThread;
     private boolean isAppInForegeround;
@@ -181,7 +182,8 @@ public class MainActivity extends AppCompatActivity {
         // Get progress bar
         pbLearn = findViewById(R.id.pbHorizontal);
         pbEnergy = findViewById(R.id.pbEnergy);
-        pbLeanText = findViewById(R.id.pbText);
+        pbLearnText = findViewById(R.id.pbLearnText);
+        pbEnergyText = findViewById(R.id.pbEnergyText);
 
         // get studi image
         mStudiImageView = findViewById(R.id.imageView_studi);
@@ -215,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
         mLearnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isLearning || isSleeping || isEating || isPartying) return;
                 learn();
                 mpButtonSound.start();
                 mpLearnSound.start();
@@ -224,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
         mFeedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isLearning || isSleeping || isEating || isPartying) return;
                 feed();
                 mpButtonSound.start();
                 mpFeedSound.start();
@@ -233,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
         mSleepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isLearning || isEating || isPartying) return;
                 sleep();
                 if (isSleeping) {
                     mpButtonSound.start();
@@ -248,7 +247,6 @@ public class MainActivity extends AppCompatActivity {
         mPartyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isLearning || isSleeping || isEating || isPartying) return;
                 party();
                 mpButtonSound.start();
                 mpPartySound.start();
@@ -350,19 +348,15 @@ public class MainActivity extends AppCompatActivity {
         startUIThread();
         isUIThreadRunning = true;
 
-        playBackgroundSound();
-
         //Abfrage, ob App das erste mal aufgerufen wurde
         if (isFirstRun) {
             //isFirstRun Boolean auf false
             isFirstRun = false;
-            /*Werte zuruecksetzen, falls User lange in der DeathActivity bleibt
-            Studigotchi wuerde dann sofort wieder sterben*/
-            learnClickTime = System.currentTimeMillis();
-            energyClickTime = System.currentTimeMillis();
+
             //first RunActivity aufrufen, um Studinamen zu vergeben
             openFirstRunActivity();
         }
+        playBackgroundSound();
 
         //set up StudiImage
         checkState();
@@ -617,7 +611,7 @@ public class MainActivity extends AppCompatActivity {
         ObjectAnimator.ofInt(pbLearn, "progress", learnValue)
                 .setDuration(800)
                 .start();
-        pbLeanText.setText(learnValue + "/" + pbLearn.getMax());
+        pbLearnText.setText(learnValue + "/" + pbLearn.getMax());
     }
 
     private void updateEnergyPb() {
@@ -629,6 +623,7 @@ public class MainActivity extends AppCompatActivity {
         ObjectAnimator.ofInt(pbEnergy, "progress", energyValue)
                 .setDuration(800)
                 .start();
+        pbEnergyText.setText(energyValue + "/" + pbEnergy.getMax());
     }
 
     /**
@@ -693,6 +688,7 @@ public class MainActivity extends AppCompatActivity {
         isUIThreadRunning = false;
         onPauseTime = System.currentTimeMillis();
         updateSharedPrefs();
+        stopBackgroundSound();
     }
 
     /**
@@ -701,7 +697,6 @@ public class MainActivity extends AppCompatActivity {
     public void stopBackgroundSound() {
         Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);
         stopService(intent);
-        Toast.makeText(getApplicationContext(), "Stop Backgroundmusic", Toast.LENGTH_SHORT).show();
     }
 
     @Override

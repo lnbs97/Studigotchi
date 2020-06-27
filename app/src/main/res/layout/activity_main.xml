@@ -83,7 +83,7 @@
         android:progress="50" />
 
     <TextView
-        android:id="@+id/pbText"
+        android:id="@+id/pbLearnText"
         android:layout_width="80dp"
         android:layout_height="20dp"
         android:layout_marginLeft="300dp"
@@ -91,33 +91,41 @@
 
     <ProgressBar
         android:id="@+id/pbEnergy"
-        style="?android:attr/progressBarStyleHorizontal"
+        style="@android:style/Widget.ProgressBar.Horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="5dp"
+        android:layout_marginRight="20dp"
         android:max="100"
-        android:progress="50"  />
+        android:progress="50"
+        android:progressTint="@color/colorAccent" />
+
+    <TextView
+        android:id="@+id/pbEnergyText"
+        android:layout_width="80dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="300dp"
+        android:layout_marginTop="0dp" />
 
     <ImageView
         android:id="@+id/imageView_studi"
         android:layout_width="200dp"
         android:layout_height="287dp"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="20dp" />
+        android:layout_marginTop="0dp" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_gravity="center"
-        android:layout_margin="20dp"
+        android:layout_marginTop="0dp"
+        android:layout_margin="10dp"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/button_learn"
-
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
@@ -128,7 +136,6 @@
 
         <ImageButton
             android:id="@+id/button_feed"
-
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
@@ -139,7 +146,6 @@
 
         <ImageButton
             android:id="@+id/button_sleep"
-
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
@@ -150,7 +156,6 @@
 
         <ImageButton
             android:id="@+id/button_party"
-
             android:layout_width="wrap_content"
             android:layout_height="80dp"
             android:layout_gravity="center_horizontal"
