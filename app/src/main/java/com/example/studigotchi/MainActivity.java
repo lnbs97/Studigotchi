@@ -1,5 +1,6 @@
 package com.example.studigotchi;
 
+import android.animation.TimeAnimator;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -28,11 +29,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    /* Bestimmt wie schnell Attribute sinken
-        hoher Faktor = sinken schneller
-        Vorher stand es auf 1000
-     */
-    private static final long TIME_FACTOR = 1000;
     private ImageView mStudiImageView;
     private ImageButton mLearnButton;
     private ImageButton mFeedButton;
@@ -57,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private long firstRunTime;
 
     private long learnClickTime;
+    private long learnEndTime;
     private long energyClickTime;
-    private long eatClickTime;
     private long sleepClickTime;
     private long partyClickTime;
 
@@ -73,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     private int learnValue;
     private int energyValue;
     private int studyDays;
+    private int gameSpeed;
 
 
 
@@ -85,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         firstRunTime = sharedPreferences.getLong("firstRunTime", 0);
 
         learnClickTime = sharedPreferences.getLong("learnClickTime", System.currentTimeMillis());
-        eatClickTime = sharedPreferences.getLong("eatClickTime", System.currentTimeMillis());
+        learnEndTime = sharedPreferences.getLong("learnEndTime", System.currentTimeMillis());
         sleepClickTime = sharedPreferences.getLong("sleepClickTime", System.currentTimeMillis());
         partyClickTime = sharedPreferences.getLong("partyClickTime", System.currentTimeMillis());
         energyClickTime = sharedPreferences.getLong("energyClickTime", System.currentTimeMillis());
@@ -101,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         learnValue = sharedPreferences.getInt("learnValue", 100);
         energyValue = sharedPreferences.getInt("energyValue", 50);
         studyDays = sharedPreferences.getInt("studyDays", 0);
+
     }
 
     private void updateSharedPrefs() {
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         editor.putLong("onPauseTime", onPauseTime)
                 .putLong("firstRunTime", firstRunTime)
                 .putLong("learnClickTime", learnClickTime)
-                .putLong("eatClickTime", eatClickTime)
+                .putLong("learnEndTime", learnEndTime)
                 .putLong("sleepClickTime", sleepClickTime)
                 .putLong("partyClickTime", partyClickTime)
                 .putLong("energyClickTime", energyClickTime)
@@ -148,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
                 .putString("playerName", "EMPTY")
                 .putInt("learnValue", learnValue)
                 .putInt("energyValue", 100)
-                .putInt("studyDays", 0).apply();
+                .putInt("studyDays", 0)
+                .putInt("gameSpeed", 2000).apply();
     }
 
     @Override
@@ -165,13 +164,6 @@ public class MainActivity extends AppCompatActivity {
         final MediaPlayer mpFeedSound = MediaPlayer.create(this, R.raw.feed_sound);
         final MediaPlayer mpWakeUpSound = MediaPlayer.create(this, R.raw.wake_up_sound);
         final MediaPlayer mpYawningSound = MediaPlayer.create(this, R.raw.yawning_sound);
-
-        setTheme(R.style.AppTheme);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         //notificationChannel aufrufen
         createNotificationChannel();
@@ -193,6 +185,9 @@ public class MainActivity extends AppCompatActivity {
 
         // get studi image
         mStudiImageView = findViewById(R.id.imageView_studi);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
+        gameSpeed = sharedPreferences.getInt("gameSpeed", 2000);
 
         startUIThread();
         isUIThreadRunning = true;
@@ -269,14 +264,16 @@ public class MainActivity extends AppCompatActivity {
                     while (isAppInForegeround) {
                         try {
                             sleep(1000);
-                            updateLearnValue();
-                            updateEnergyValue();
+                            if(!isLearning && !isSleeping && !isEating && !isPartying) {
+                                updateLearnValue();
+                                updateEnergyValue();
+                            }
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    pbLearn.setProgress(learnValue);
-                                    pbLeanText.setText(learnValue + "/100");
-                                    pbEnergy.setProgress(energyValue);
+                                    updateEnergyPb();
+                                    updateLearnPb();
+                                    updateImage();
                                 }
                             });
                             Log.i(LOG_TAG, "learnValue: " + learnValue);
@@ -292,43 +289,41 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected void startProgress() {
+    private void checkLearnStatus(){
         long currentTime = System.currentTimeMillis();
 
-        /*Studigotchi ist am lernen, Background Animation wird auf Lernen gesetzt,
-         * wenn 10 Sekunden seit learnClickTime vergangen sind*/
-        if (isLearning && currentTime <= learnClickTime) {
+        if (isLearning && currentTime <= learnEndTime) {
             setAnimationLearn();
             disableButtons();
-        }
-        //Wenn der Studi fertig gerlernt hat
-        if (isLearning && currentTime >= learnClickTime) {
+        } else {
+            //Wenn Studi zu ende gelernt hat
             isLearning = false;
             enableButtons();
         }
-        //Wenn der Studi nicht mehr lernt, und Zeit seit lernen vergangen ist, Punktabzug
-        //Außerdem wird das Bild durch checkState geprüft und ggf. abgeändert
-        if (!isLearning && currentTime > learnClickTime) {
-            learnValue -= 0.5 * ((System.currentTimeMillis() - learnClickTime) / TIME_FACTOR);
-            energyValue -= 0.5 * ((System.currentTimeMillis() - energyClickTime) / TIME_FACTOR);
-            learnClickTime = System.currentTimeMillis();
-            energyClickTime = System.currentTimeMillis();
-        }
-        updateLearnPb();
-        updateEnergyPb();
-
     }
 
     private void updateEnergyValue() {
-        energyValue -= 0.5 * ((System.currentTimeMillis() - energyClickTime) / TIME_FACTOR);
-        energyClickTime = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
+        int energyLost = (int)((currentTime - energyClickTime) / (gameSpeed));
+        Log.i(LOG_TAG, "energyClickTime: " + energyClickTime);
+        if(energyLost > 0){
+            energyValue -= energyLost;
+            energyClickTime = System.currentTimeMillis();
+        }
     }
 
     private void updateLearnValue() {
         long currentTime = System.currentTimeMillis();
-        if (!isLearning && currentTime > learnClickTime) {
-            learnValue -= 0.5 * ((System.currentTimeMillis() - learnClickTime) / TIME_FACTOR);
-            learnClickTime = System.currentTimeMillis();
+        if (!isLearning && currentTime > learnEndTime) {
+            Log.i(LOG_TAG, "learnEndTime: " + learnEndTime);
+            Log.i(LOG_TAG, "currentTime: " + currentTime);
+            Log.i(LOG_TAG, "gameSpeed: " + gameSpeed);
+            Log.i(LOG_TAG, "result: " + (currentTime - learnEndTime) / (gameSpeed));
+            int learnLost = (int)((currentTime - learnEndTime) / (gameSpeed));
+            if(learnLost > 0){
+                learnValue -= learnLost;
+                learnEndTime = System.currentTimeMillis();
+            }
         }
     }
 
@@ -379,24 +374,6 @@ public class MainActivity extends AppCompatActivity {
         TextView textview = findViewById(R.id.tv_studi_name);
         textview.setText(playerName);
 
-        if (isSleeping) {
-            mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
-            isSleeping = true;
-            //Button Bild ändern zu "Aufwecken-Bild"
-            mSleepButton.setImageResource(R.drawable.ic_wake_up);
-
-            //Alle Buttons außer sleep deaktivieren
-            disableButtons();
-            mSleepButton.setEnabled(true);
-            mSleepButton.setImageAlpha(0XFF);
-        } else if (isEating) {
-            isEating = false;
-            startProgress();
-        } else if (isPartying) {
-            checkPartyStatus();
-            startProgress();
-        } else if (!isFirstRun)
-            startProgress();
     }
 
     private void checkPartyStatus() {
@@ -466,16 +443,12 @@ public class MainActivity extends AppCompatActivity {
             mSleepButton.setImageAlpha(0XFF);
         } else if (isEating) {
             isEating = false;
-            startProgress();
         } else if (isPartying) {
             mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
             disableButtons();
             checkPartyStatus();
-            if (!isPartying) {
-                startProgress();
-            }
         } else if (isLearning) {
-            startProgress();
+            checkLearnStatus();
         }
         updateImage();
     }
@@ -520,13 +493,10 @@ public class MainActivity extends AppCompatActivity {
         //Alarm fuer Benachrichtigung starten
         startAlarm();
 
-
         learnValue += 30;
         energyValue -= 30;
-        //TODO Logik / Name von LearnClickTime ueberdenken
-        //10 Sekunden hinzufuegen, die das Lernen dauert ->
-        // LearnClickTime ist eigtl falscher Name für die Logik
-        learnClickTime = System.currentTimeMillis() + 10000;
+        //10 Sekunden hinzufuegen, die das Lernen dauert -> LearnEndTime
+        learnEndTime = System.currentTimeMillis() + 10 * gameSpeed;
         isLearning = true;
         updateLearnPb();
         updateEnergyPb();
@@ -552,13 +522,14 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 feedOver();
             }
-        }, 3000);
+        }, 5000);
     }
 
     private void feedOver() {
         //Studi-Bild entsprechend ändern
         checkState();
         isEating = false;
+        learnEndTime = System.currentTimeMillis();
 
         //Buttons aktivieren
         enableButtons();
@@ -601,17 +572,16 @@ public class MainActivity extends AppCompatActivity {
             mSleepButton.setEnabled(true);
             mSleepButton.setImageAlpha(0XFF);
         } else {
-            long timeStudiWasSleeping = System.currentTimeMillis() - sleepClickTime;
-            energyValue += 0.5 * (timeStudiWasSleeping / 1000);
+            long timeStudiSlept = System.currentTimeMillis() - sleepClickTime;
+            energyValue += (timeStudiSlept / gameSpeed);
             updateEnergyPb();
             energyClickTime = System.currentTimeMillis();
             //Alarm fuer Benachrichtigung starten
             startAlarm();
 
-            learnClickTime = System.currentTimeMillis();
+            learnEndTime = System.currentTimeMillis();
             isSleeping = false;
 
-            //TODO Fehler über
             //Studi-Bild entsprechend ändern
             updateImage();
             //Button Bild ändern zu "Einschlafen-Bild"
@@ -627,10 +597,10 @@ public class MainActivity extends AppCompatActivity {
         isPartying = true;
         disableButtons();
         energyValue += 40;
-        energyClickTime = System.currentTimeMillis() + 10000;
+        energyClickTime = System.currentTimeMillis() + 10 *gameSpeed;
         //während der Zeit, in der Party gemacht wird, werden keine Lernenpunkte abgezogen,
         //also learnClickTime auf Partyende setzen
-        learnClickTime = System.currentTimeMillis() + 10000;
+        learnEndTime = System.currentTimeMillis() + 10 *gameSpeed;
         //Alarm fuer Benachrichtigung starten
         startAlarm();
         updateEnergyPb();
@@ -689,10 +659,10 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
         long timeAtButtonClick = System.currentTimeMillis();
-        //zu Testzwecken gibt es eine Benachrichtigung nach 20 Sekunden klicken des Buttons
-        long oneHourInMillis = 1000 * 20;
+        //Zeit, wann die Benachrichtigung nach druecken eines Buttons kommen soll.
+        long timeInMillis = gameSpeed * 20;
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + oneHourInMillis, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + timeInMillis, pendingIntent);
 
     }
 

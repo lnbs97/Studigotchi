@@ -21,6 +21,34 @@
         android:hint="@string/enter_Name"
         android:inputType="textPersonName" />
 
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/testGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkButton"
+            android:text="@string/test_game"
+            android:checked="true"/>
+
+        <RadioButton
+            android:id="@+id/normalGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkButton"
+            android:text="@string/normal_game" />
+
+        <RadioButton
+            android:id="@+id/slowGame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="checkButton"
+            android:text="@string/slow_game" />
+    </RadioGroup>
+
     <Button
         android:id="@+id/button_mainActivity"
         android:layout_width="match_parent"
