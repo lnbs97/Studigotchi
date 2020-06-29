@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/studi_idle50_2" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_3" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_4" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_5" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_6" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_7" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_8" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_9" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_10" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_11" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_12" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_13" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_14" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_16" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_17" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_18" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_19" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_20" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_21" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_22" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_23" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_24" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_25" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_26" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_27" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_28" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_29" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_30" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_31" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_32" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_33" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_34" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_35" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_36" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_37" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_38" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_39" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_40" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_41" android:duration="250"/>
+    <item android:drawable="@drawable/studi_idle50_42" android:duration="550"/>
+</animation-list>

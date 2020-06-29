@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/studi_idleu10_2" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_3" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_4" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_5" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_6" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_7" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_8" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_9" android:duration="500"/>
+    <item android:drawable="@drawable/studi_idleu10_10" android:duration="500"/>
+</animation-list>

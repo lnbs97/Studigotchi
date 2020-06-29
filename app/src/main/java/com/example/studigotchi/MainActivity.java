@@ -339,6 +339,36 @@ public class MainActivity extends AppCompatActivity {
         backgroundAnimation.start();
     }
 
+    private void setAnimationOver50() {
+        mStudiImageView.setBackgroundResource(R.drawable.animation_more50_idle);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
+    }
+
+    private void setAnimationUnder10() {
+        mStudiImageView.setBackgroundResource(R.drawable.animation_under10_idle);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
+    }
+
+    private void setAnimationUnder50() {
+        mStudiImageView.setBackgroundResource(R.drawable.animation_under50_idle);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
+    }
+    private void setAnimationSleeping() {
+        mStudiImageView.setBackgroundResource(R.drawable.animation_sleeping);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
+    }
+
+    private void setAnimationParty() {
+        mStudiImageView.setBackgroundResource(R.drawable.animation_party);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
+    }
+
+
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
         super.onResume();
@@ -390,16 +420,16 @@ public class MainActivity extends AppCompatActivity {
                 //mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
             } else if (learnValue >= 50) {
                 //Setze normales Bild und sounds
-                //TODO Animation einfuegen?
-                mStudiImageView.setBackgroundResource(R.drawable.studi_idle);
+                //TODO Animation einfuegen? DONE
+                setAnimationOver50();
             } else if (learnValue > 10) {
                 // Setze unglückliches bild und sound
                 //TODO Animation einfuegen?
-                mStudiImageView.setBackgroundResource(R.drawable.studi_sad);
+                setAnimationUnder50();
             } else if (learnValue > 0) {
                 //extrem kritischer Zustand
                 //TODO Animation einfuegen?
-                mStudiImageView.setBackgroundResource(R.drawable.studi_emergency);
+                setAnimationUnder10();
             } else {
                 // Studi stirbt
                 // Deathscreen
@@ -429,7 +459,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void checkState() {
         if (isSleeping) {
-            mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
+            setAnimationSleeping();
             //Button Bild ändern zu "Aufwecken-Bild"
             mSleepButton.setImageResource(R.drawable.ic_wake_up);
 
@@ -440,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (isEating) {
             isEating = false;
         } else if (isPartying) {
-            mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
+            setAnimationParty();
             disableButtons();
             checkPartyStatus();
         } else if (isLearning) {
@@ -556,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
     private void sleep() {
         if (!isSleeping) {
             //Bild aendern auf schlafen
-            mStudiImageView.setBackgroundResource(R.drawable.studi_sleeping);
+            setAnimationSleeping();
             isSleeping = true;
             sleepClickTime = System.currentTimeMillis();
 
@@ -589,7 +619,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void party() {
-        mStudiImageView.setBackgroundResource(R.drawable.studi_partying);
+        setAnimationParty();
         isPartying = true;
         disableButtons();
         energyValue += 40;
