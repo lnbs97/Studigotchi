@@ -368,6 +368,12 @@ public class MainActivity extends AppCompatActivity {
         backgroundAnimation.start();
     }
 
+    private void setAnimationEating() {
+        mStudiImageView.setBackgroundResource(R.drawable.animation_eating);
+        backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
+        backgroundAnimation.start();
+    }
+
 
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
@@ -531,7 +537,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void feed() {
         //Bild aendern auf essen
-        mStudiImageView.setBackgroundResource(R.drawable.studi_eating);
+        setAnimationEating();
         isEating = true;
         energyValue += 10;
         updateEnergyPb();

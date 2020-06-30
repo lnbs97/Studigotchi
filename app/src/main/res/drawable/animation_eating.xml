@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/studi_eating1" android:duration="300"/>
+    <item android:drawable="@drawable/studi_eating2" android:duration="300"/>
+    <item android:drawable="@drawable/studi_eating3" android:duration="300"/>
+    <item android:drawable="@drawable/studi_eating4" android:duration="500"/>
+    <item android:drawable="@drawable/studi_eating5" android:duration="500"/>
+    <item android:drawable="@drawable/studi_eating6" android:duration="500"/>
+    <item android:drawable="@drawable/studi_eating7" android:duration="500"/>
+    <item android:drawable="@drawable/studi_eating8" android:duration="750"/>
+
+
+</animation-list>
