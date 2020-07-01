@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -16,6 +15,8 @@ public class DeathActivity extends AppCompatActivity {
     TextView mScoreTextView;
     TextView mHighscoreTextView;
     Button mRestartButton;
+
+    private int studyDays;
 
 
     /**
@@ -30,30 +31,26 @@ public class DeathActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_death_activty);
 
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            studyDays = bundle.getInt("studyDays");
+        }
+
         mScoreTextView = findViewById(R.id.tv_deathscreen_score);
         mHighscoreTextView = findViewById(R.id.tv_highscore);
         mRestartButton = findViewById(R.id.btn_restart);
 
 
         SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
-        int studienTage = sharedPreferences.getInt("studientage", 0);
-        int highscoreTage = sharedPreferences.getInt("highscoreTage", 0);
-        String name = sharedPreferences.getString("name", "");
-
-        if (studienTage > highscoreTage) {
-            highscoreTage = studienTage;
-            sharedPreferences.edit().putInt("highscoreTage", highscoreTage).commit();
-            sharedPreferences.edit().putString("highscoreName", name).commit();
-        }
-
-        String highscoreName = sharedPreferences.getString("highscoreName", name);
+        int highscoreTage = sharedPreferences.getInt("highscoreDays", 0);
+        String highscoreName = sharedPreferences.getString("highscoreName", null);
 
 
         long firstRunTime = System.currentTimeMillis();
         sharedPreferences.edit().putLong("firstRunTime", firstRunTime);
 
         mHighscoreTextView.setText("Dein bislang bester Studi war " + highscoreName + " mit " + highscoreTage + " Tagen.");
-        mScoreTextView.setText(String.valueOf(studienTage));
+        mScoreTextView.setText(String.valueOf(studyDays));
         mRestartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

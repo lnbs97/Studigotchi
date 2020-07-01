@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar pbEnergy;
     private TextView pbLearnText;
     private TextView pbEnergyText;
+    private TextView mStudyDaysText;
 
     private Thread updateUIThread;
     private boolean isAppInForegeround;
@@ -65,11 +66,14 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFirstRun;
 
     private String playerName;
+    private String highscoreName;
 
     private int learnValue;
     private int energyValue;
     private int studyDays;
+    private int highscoreDays;
     private int gameSpeed;
+
 
     /* SharedPreferences Variablen ENDE */
 
@@ -92,10 +96,12 @@ public class MainActivity extends AppCompatActivity {
         isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
 
         playerName = sharedPreferences.getString("playerName", "EMPTY");
+        highscoreName = sharedPreferences.getString("highscoreName", null);
 
         learnValue = sharedPreferences.getInt("learnValue", 100);
         energyValue = sharedPreferences.getInt("energyValue", 50);
         studyDays = sharedPreferences.getInt("studyDays", 0);
+        highscoreDays = sharedPreferences.getInt("highscoreDays", 0);
 
     }
 
@@ -116,9 +122,11 @@ public class MainActivity extends AppCompatActivity {
                 .putBoolean("isPartying", isPartying)
                 .putBoolean("isFirstRun", isFirstRun)
                 .putString("playerName", playerName)
+                .putString("highscoreName", highscoreName)
                 .putInt("learnValue", learnValue)
                 .putInt("energyValue", energyValue)
-                .putInt("studyDays", studyDays).apply();
+                .putInt("studyDays", studyDays)
+                .putInt("highscoreDays", highscoreDays).apply();
     }
 
     private void resetSharedPrefs() {
@@ -223,6 +231,9 @@ public class MainActivity extends AppCompatActivity {
         // get studi image
         mStudiImageView = findViewById(R.id.imageView_studi);
 
+        mStudyDaysText = findViewById(R.id.tv_studientage);
+        mStudyDaysText.setText("Tag " + studyDays);
+
         SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
         gameSpeed = sharedPreferences.getInt("gameSpeed", 2000);
 
@@ -279,6 +290,7 @@ public class MainActivity extends AppCompatActivity {
                     while (isAppInForegeround) {
                         try {
                             sleep(1000);
+                            updateStudyDays();
                             if (!isLearning && !isSleeping && !isEating && !isPartying) {
                                 updateLearnValue();
                                 updateEnergyValue();
@@ -303,6 +315,17 @@ public class MainActivity extends AppCompatActivity {
             };
             updateUIThread.start();
         }
+    }
+
+    private void updateStudyDays() {
+        // Studientage anzeigen lassen
+
+        long currentTime = System.currentTimeMillis();
+        long timeAlive = currentTime - firstRunTime;
+
+        studyDays = (int) (timeAlive / 1000 / 60 / 10);
+
+        mStudyDaysText.setText("Tag " + studyDays);
     }
 
     private void checkLearnStatus() {
@@ -413,11 +436,6 @@ public class MainActivity extends AppCompatActivity {
         //set up StudiImage
         checkState();
 
-        // Studientage anzeigen lassen
-        TextView studientageTextView = findViewById(R.id.tv_studientage);
-        studyDays = getStudienTage();
-        studientageTextView.setText("Tag " + studyDays);
-
         //name aus sharedpref in TextView schreiben
         TextView textview = findViewById(R.id.tv_studi_name);
         textview.setText(playerName);
@@ -465,10 +483,17 @@ public class MainActivity extends AppCompatActivity {
      * Setzt alle Werte zurück und springt zur DeathActivity.
      */
     private void restart() {
+        //Prüfen ob ein neuer highscore erreicht wurde
+        if (studyDays > highscoreDays) {
+            highscoreDays = studyDays;
+            highscoreName = playerName;
+            updateSharedPrefs();
+        }
         resetSharedPrefs();
         Context context = MainActivity.this;
         Class destinationActivity = DeathActivity.class;
         Intent intent = new Intent(context, destinationActivity);
+        intent.putExtra("studyDays", studyDays);
         startActivity(intent);
     }
 
@@ -504,20 +529,6 @@ public class MainActivity extends AppCompatActivity {
             checkLearnStatus();
         }
         updateImage();
-    }
-
-    /**
-     * Berechnet Studientage auf Basis der aktuellen Zeit und der Startzeit
-     * 1 Tag in Echtzeit = 4 Tage im Spiel
-     *
-     * @return Studientage
-     */
-    private int getStudienTage() {
-        long currentTime = System.currentTimeMillis();
-        long timeAlive = currentTime - firstRunTime;
-
-        studyDays = (int) (timeAlive / 1000 / 60 / 60 / 4);
-        return studyDays;
     }
 
     /**
