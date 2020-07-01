@@ -1,11 +1,9 @@
 package com.example.studigotchi;
 
-import android.animation.TimeAnimator;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,8 +13,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.animation.ObjectAnimator;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -36,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mPartyButton;
     private Boolean musicIsPlaying;
     private static final String LOG_TAG = "MainActivity";
-    private Button musicButton;
-    private Button infoButton;
     private AnimationDrawable backgroundAnimation;
     private ProgressBar pbLearn;
     private ProgressBar pbEnergy;
@@ -152,11 +151,53 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+
+            // Wenn Sound Button gedrückt wurde
+            case R.id.action_sound:
+                toggleMusic();
+                if (musicIsPlaying) {
+                    item.setIcon(R.drawable.volume_on);
+                } else {
+                    item.setIcon(R.drawable.volume_off);
+                }
+                return true;
+
+            // Wenn Info Button gedrückt wurde
+            case R.id.action_info:
+                openInfoActivity();
+                return true;
+
+            // Wenn Hilfe Button gedrückt wurde
+            case R.id.action_help:
+                openHelpActivity();
+                return true;
+
+            // Wenn Exmatrikulations Button gedrückt wurde
+            case R.id.action_restart:
+                restart();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         isAppInForegeround = true;
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         final MediaPlayer mpLearnSound = MediaPlayer.create(this, R.raw.learn_sound);
         final MediaPlayer mpButtonSound = MediaPlayer.create(this, R.raw.button_press);
@@ -175,10 +216,6 @@ public class MainActivity extends AppCompatActivity {
         mSleepButton = findViewById(R.id.button_sleep);
         mPartyButton = findViewById(R.id.button_party);
 
-        // Get control buttons
-        musicButton = findViewById(R.id.button_music);
-        infoButton = findViewById(R.id.button_info);
-
         // Get progress bar
         pbLearn = findViewById(R.id.pbHorizontal);
         pbEnergy = findViewById(R.id.pbEnergy);
@@ -193,24 +230,6 @@ public class MainActivity extends AppCompatActivity {
 
         startUIThread();
         isUIThreadRunning = true;
-
-        //wenn user auf info-button klickt
-        // info activity oeffnen
-        infoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openInfoActivity();
-            }
-        });
-
-        // wenn User auf den Lautsprecher-Button klickt
-        // Musik an bzw- ausschalten
-        musicButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                playmusic();
-            }
-        });
 
         // wenn User auf den Lernen-Button klickt
         // Bilder aendern und Sound starten
@@ -262,14 +281,14 @@ public class MainActivity extends AppCompatActivity {
                     while (isAppInForegeround) {
                         try {
                             sleep(1000);
-                            if(!isLearning && !isSleeping && !isEating && !isPartying) {
+                            if (!isLearning && !isSleeping && !isEating && !isPartying) {
                                 updateLearnValue();
                                 updateEnergyValue();
                             }
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(isLearning || isPartying)
+                                    if (isLearning || isPartying)
                                         checkState();
                                     updateEnergyPb();
                                     updateLearnPb();
@@ -281,7 +300,6 @@ public class MainActivity extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }
             };
@@ -289,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkLearnStatus(){
+    private void checkLearnStatus() {
         long currentTime = System.currentTimeMillis();
 
         if (isLearning && currentTime <= learnEndTime) {
@@ -304,9 +322,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateEnergyValue() {
         long currentTime = System.currentTimeMillis();
-        int energyLost = (int)((currentTime - energyClickTime) / (gameSpeed));
+        int energyLost = (int) ((currentTime - energyClickTime) / (gameSpeed));
         Log.i(LOG_TAG, "energyClickTime: " + energyClickTime);
-        if(energyLost > 0){
+        if (energyLost > 0) {
             energyValue -= energyLost;
             energyClickTime = System.currentTimeMillis();
         }
@@ -319,8 +337,8 @@ public class MainActivity extends AppCompatActivity {
             Log.i(LOG_TAG, "currentTime: " + currentTime);
             Log.i(LOG_TAG, "gameSpeed: " + gameSpeed);
             Log.i(LOG_TAG, "result: " + (currentTime - learnEndTime) / (gameSpeed));
-            int learnLost = (int)((currentTime - learnEndTime) / (gameSpeed));
-            if(learnLost > 0){
+            int learnLost = (int) ((currentTime - learnEndTime) / (gameSpeed));
+            if (learnLost > 0) {
                 learnValue -= learnLost;
                 learnEndTime = System.currentTimeMillis();
             }
@@ -356,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
+
     private void setAnimationSleeping() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_sleeping);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
@@ -437,25 +456,30 @@ public class MainActivity extends AppCompatActivity {
                 //TODO Animation einfuegen?
                 setAnimationUnder10();
             } else {
-                // Studi stirbt
-                // Deathscreen
                 // Neustart
                 //TODO Sound einfuegen?
-                resetSharedPrefs();
-                Context context = MainActivity.this;
-                Class destinationActivity = DeathActivity.class;
-                Intent intent = new Intent(context, destinationActivity);
-                startActivity(intent);
-
+                restart();
             }
         }
+    }
+
+    /**
+     * Ein neues Spiel starten
+     * Setzt alle Werte zurück und springt zur DeathActivity.
+     */
+    private void restart() {
+        resetSharedPrefs();
+        Context context = MainActivity.this;
+        Class destinationActivity = DeathActivity.class;
+        Intent intent = new Intent(context, destinationActivity);
+        startActivity(intent);
     }
 
     public void playBackgroundSound() {
         Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);
         startService(intent);
         musicIsPlaying = true;
-        musicButton.setBackgroundResource(R.drawable.speaker_on);
+        //TODO Sound icon auf eingeschaltet setzen
     }
 
 
@@ -499,14 +523,12 @@ public class MainActivity extends AppCompatActivity {
      * Die Musik wird an bzw ausgeschaltet und
      * das icon des Buttons gewechselt dementsprechend
      */
-    private void playmusic() {
+    private void toggleMusic() {
         if (musicIsPlaying) {
             stopBackgroundSound();
-            musicButton.setBackgroundResource(R.drawable.speaker_off);
             musicIsPlaying = false;
         } else {
             playBackgroundSound();
-            musicButton.setBackgroundResource(R.drawable.speaker_on);
             musicIsPlaying = true;
         }
     }
@@ -629,10 +651,10 @@ public class MainActivity extends AppCompatActivity {
         isPartying = true;
         disableButtons();
         energyValue += 40;
-        energyClickTime = System.currentTimeMillis() + 10 *gameSpeed;
+        energyClickTime = System.currentTimeMillis() + 10 * gameSpeed;
         //während der Zeit, in der Party gemacht wird, werden keine Lernenpunkte abgezogen,
         //also learnClickTime auf Partyende setzen
-        learnEndTime = System.currentTimeMillis() + 10 *gameSpeed;
+        learnEndTime = System.currentTimeMillis() + 10 * gameSpeed;
         //Alarm fuer Benachrichtigung starten
         startAlarm();
         updateEnergyPb();
@@ -641,8 +663,8 @@ public class MainActivity extends AppCompatActivity {
     private void updateLearnPb() {
         if (learnValue > 100) {
             learnValue = 100;
-        }else if(learnValue<0)
-            learnValue=0;
+        } else if (learnValue < 0)
+            learnValue = 0;
 
         ObjectAnimator.ofInt(pbLearn, "progress", learnValue)
                 .setDuration(800)
@@ -706,6 +728,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private void openInfoActivity() {
         Intent intent = new Intent(this, InfoActivity.class);
+        startActivity(intent);
+    }
+
+    /**
+     * Öffnet die Hilfe Activity
+     */
+    private void openHelpActivity() {
+        Intent intent = new Intent(this, HelpActivity.class);
         startActivity(intent);
     }
 
