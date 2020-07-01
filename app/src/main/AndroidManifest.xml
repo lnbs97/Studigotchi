@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.studigotchi">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.studigotchi"
+    tools:ignore="LockedOrientationActivity">
 
     <application
         android:allowBackup="true"
@@ -10,12 +12,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".HelpActivity" />
-        <activity android:name=".InfoActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".DeathActivity" />
-        <activity android:name=".firstRunActivity" />
-        <activity android:name=".SplashScreen">
+        <activity
+            android:name=".HelpActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".InfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".DeathActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".firstRunActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
