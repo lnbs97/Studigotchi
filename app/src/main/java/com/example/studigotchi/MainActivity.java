@@ -71,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
     private int studyDays;
     private int gameSpeed;
 
-
-
     /* SharedPreferences Variablen ENDE */
 
     private void getSharedPrefs() {
@@ -393,7 +391,6 @@ public class MainActivity extends AppCompatActivity {
         backgroundAnimation.start();
     }
 
-
     //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
     protected void onResume() {
         super.onResume();
@@ -509,7 +506,12 @@ public class MainActivity extends AppCompatActivity {
         updateImage();
     }
 
-
+    /**
+     * Berechnet Studientage auf Basis der aktuellen Zeit und der Startzeit
+     * 1 Tag in Echtzeit = 4 Tage im Spiel
+     *
+     * @return Studientage
+     */
     private int getStudienTage() {
         long currentTime = System.currentTimeMillis();
         long timeAlive = currentTime - firstRunTime;
@@ -589,6 +591,9 @@ public class MainActivity extends AppCompatActivity {
         enableButtons();
     }
 
+    /**
+     * Deaktiviert alle Buttons
+     */
     private void disableButtons() {
         mPartyButton.setEnabled(false);
         mSleepButton.setEnabled(false);
@@ -600,6 +605,9 @@ public class MainActivity extends AppCompatActivity {
         mFeedButton.setImageAlpha(0X3F);
     }
 
+    /**
+     * Aktiviert alle Buttons
+     */
     private void enableButtons() {
         mPartyButton.setEnabled(true);
         mSleepButton.setEnabled(true);

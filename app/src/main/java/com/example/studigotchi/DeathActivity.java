@@ -17,6 +17,14 @@ public class DeathActivity extends AppCompatActivity {
     TextView mHighscoreTextView;
     Button mRestartButton;
 
+
+    /**
+     * Verhindert, dass man zurückspringen kann
+     */
+    @Override
+    public void onBackPressed() {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

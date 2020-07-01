@@ -58,6 +58,12 @@ public class firstRunActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Verhindert, dass man zurückspringen kann
+     */
+    @Override
+    public void onBackPressed() {
+    }
 
     //erst namen auslesen, diesen mit der Konstanten uebergeben und MainActivity starten
     public void openMainActivity(){
