@@ -2,6 +2,7 @@ package com.example.studigotchi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ public class DeathActivity extends AppCompatActivity {
     public void onBackPressed() {
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +46,6 @@ public class DeathActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
         int highscoreTage = sharedPreferences.getInt("highscoreDays", 0);
         String highscoreName = sharedPreferences.getString("highscoreName", null);
-
-
-        long firstRunTime = System.currentTimeMillis();
-        sharedPreferences.edit().putLong("firstRunTime", firstRunTime);
 
         mHighscoreTextView.setText("Dein bislang bester Studi war " + highscoreName + " mit " + highscoreTage + " Tagen.");
         mScoreTextView.setText(String.valueOf(studyDays));
