@@ -21,6 +21,16 @@
     <string name="test_game">Testspiel</string>
     <string name="normal_game">normales Spiel</string>
     <string name="slow_game">langsames Spiel</string>
-    <string name="anleitungs_text">Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</string>
+    <string name="anleitungs_text">Damit dein Studi ein erfolgreiches Studium absolviert musst du dich um seine Bedürfnisse Leistung und Energie kümmern. Wenn die Leistung deines Studis auf 0 fällt, wird er exmatrikuliert. Um dies zu verhindern, muss dein Studi regelmäßig lernen. Zum Lernen benötigt dein Studi Energie. Es gibt drei Wege um an Energie zu gelangen:
+	\n\nEssen
+	\n	- geht sehr schnell
+	\n	- gibt relativ wenig Energie
+	\n\nSchlafen
+	\n	- dein Studi wacht mit neuer Energie auf, je nach Schlafdauer
+	\n	- Schlafen verlangsamt die Leistungsabnahme
+	\n\nFeiern
+	\n	- dauert länger als Essen
+	\n	- gibt viel Energie
+\n\nWährend eine Aktion durchgeführt wird, sind alle anderen Aktionen gesperrt.</string>
     <string name="anleitung">Anleitung</string>
 </resources>
