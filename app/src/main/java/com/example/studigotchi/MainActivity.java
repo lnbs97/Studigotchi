@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
                     while (isAppInForegeround) {
                         try {
                             sleep(1000);
-                            updateStudyDays();
+
                             if (!isLearning && !isSleeping && !isEating && !isPartying) {
                                 updateLearnValue();
                                 updateEnergyValue();
@@ -300,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void run() {
                                     if (isLearning || isPartying)
                                         checkState();
+                                    updateStudyDays();
                                     updateEnergyPb();
                                     updateLearnPb();
                                     updateImage();
@@ -648,6 +649,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             long timeStudiSlept = System.currentTimeMillis() - sleepClickTime;
             energyValue += (timeStudiSlept / gameSpeed);
+            learnValue -= ((timeStudiSlept / gameSpeed)/2);
             updateEnergyPb();
             energyClickTime = System.currentTimeMillis();
             //Alarm fuer Benachrichtigung starten
