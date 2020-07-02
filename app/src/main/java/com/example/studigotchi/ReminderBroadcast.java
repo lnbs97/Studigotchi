@@ -12,7 +12,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"notifyLearn")
-                .setSmallIcon(R.drawable.ic_studi_idle)
+                .setSmallIcon(R.drawable.studi0001)
                 .setContentTitle("Benachrichtigung")
                 .setContentText("Dein Studigotchi langweilt sich")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);

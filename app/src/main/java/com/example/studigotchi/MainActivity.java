@@ -196,6 +196,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Verhindert, dass man nach dem Erstellen eines Studis zurückspringen kann
+     */
+
+    @Override
+    public void onBackPressed() {
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

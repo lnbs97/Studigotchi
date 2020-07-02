@@ -19,7 +19,6 @@ public class DeathActivity extends AppCompatActivity {
 
     private int studyDays;
 
-
     /**
      * Verhindert, dass man zurückspringen kann
      */
