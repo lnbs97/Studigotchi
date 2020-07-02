@@ -442,6 +442,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void checkPartyStatus() {
         long currentTime = System.currentTimeMillis();
         if (currentTime > energyClickTime) {
@@ -589,7 +590,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 feedOver();
             }
-        }, 5000);
+        }, 3000);
     }
 
     private void feedOver() {
