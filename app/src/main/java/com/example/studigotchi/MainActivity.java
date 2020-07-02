@@ -98,8 +98,8 @@ public class MainActivity extends AppCompatActivity {
         playerName = sharedPreferences.getString("playerName", "EMPTY");
         highscoreName = sharedPreferences.getString("highscoreName", null);
 
-        learnValue = sharedPreferences.getInt("learnValue", 100);
-        energyValue = sharedPreferences.getInt("energyValue", 50);
+        learnValue = sharedPreferences.getInt("learnValue", 70);
+        energyValue = sharedPreferences.getInt("energyValue", 70);
         studyDays = sharedPreferences.getInt("studyDays", 0);
         highscoreDays = sharedPreferences.getInt("highscoreDays", 0);
 
@@ -136,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
         firstRunTime = System.currentTimeMillis();
 
         isFirstRun = true;
-        learnValue = 100;
-        energyValue = 50;
+        learnValue = 70;
+        energyValue = 70;
         learnClickTime = System.currentTimeMillis();
         energyClickTime = System.currentTimeMillis();
         editor.putLong("onPauseTime", 0)

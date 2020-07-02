@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    tools:context=".firstRunActivity">
+
+
+    <TextView
+        android:id="@+id/textView_welcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/welcome"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/nameInput"
+        android:layout_width="421dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="112dp"
+        android:hint="@string/enter_Name"
+        android:importantForAutofill="no"
+        android:inputType="textCapWords"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_welcome" />
+
+    <Button
+        android:id="@+id/button_mainActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:text="@string/mainActivity"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/nameInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/nameInput"
+        app:layout_constraintTop_toBottomOf="@+id/nameInput" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="405dp"
+        android:layout_height="363dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_mainActivity">
+
+        <RadioButton
+            android:id="@+id/testGame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="#8A8A8A"
+            android:backgroundTintMode="add"
+            android:buttonTint="#4CAF50"
+            android:checked="true"
+            android:onClick="checkButton"
+            android:text="@string/test_game"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/button_mainActivity" />
+
+        <RadioButton
+            android:id="@+id/normalGame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="#8A8A8A"
+            android:backgroundTintMode="add"
+            android:buttonTint="#4CAF50"
+            android:onClick="checkButton"
+            android:text="@string/normal_game"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/testGame"
+            app:layout_constraintTop_toBottomOf="@+id/testGame" />
+
+        <RadioButton
+            android:id="@+id/slowGame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:backgroundTint="#8A8A8A"
+            android:backgroundTintMode="add"
+            android:buttonTint="#4CAF50"
+            android:onClick="checkButton"
+            android:text="@string/slow_game"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/normalGame"
+            app:layout_constraintTop_toBottomOf="@+id/normalGame" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/spielgeschwindigkeit"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_mainActivity"
+        app:layout_constraintVertical_bias="0.772" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

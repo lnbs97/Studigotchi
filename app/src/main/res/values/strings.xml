@@ -3,9 +3,9 @@
     <string name="learn">Lernen</string>
     <string name="mainActivity">Enter</string>
     <string name="enter_Name">Gib einen Namen ein</string>
-    <string name="welcome">Herzlichen Willkommen bei Studigotchi!\n
+    <string name="welcome">Herzlich Willkommen bei Studigotchi!\n
     Jetzt geht die Reise deines Studigotchis los.\n
-    Als erstes gib deinem Studigotchi einen Namen.</string>
+    Gib deinem Studigotchi zuerst einen Namen.</string>
     <string name="deathMessage">Das wars dann wohl...</string>
     <string name="deathMessage2">Du wurdest exmatrikuliert!</string>
     <string name="tag_der_exmatrikulation">Tag der Exmatrikulation</string>
@@ -20,7 +20,7 @@
         \nAlle verwendeten Sounds und stammen von www.freesound.org und www.zapsplat.com
         \nDie Musik stammt von www.freemusicarchive.org (Komiku - School)
         \nAnimationen und Studi Grafiken wurden selbst erstellt."</string>
-    <string name="test_game">Testspiel</string>
+    <string name="test_game">Testspiel \n(empfohlen zur Bewertung)</string>
     <string name="normal_game">normales Spiel</string>
     <string name="slow_game">langsames Spiel</string>
     <string name="anleitungs_text">Damit dein Studi ein erfolgreiches Studium absolviert musst du dich um seine Bedürfnisse Leistung und Energie kümmern. Wenn die Leistung deines Studis auf 0 fällt, wird er exmatrikuliert. Um dies zu verhindern, muss dein Studi regelmäßig lernen. Zum Lernen benötigt dein Studi Energie. Es gibt drei Wege um an Energie zu gelangen:
@@ -35,4 +35,5 @@
 	\n	- gibt viel Energie
 \n\nWährend eine Aktion durchgeführt wird, sind alle anderen Aktionen gesperrt.</string>
     <string name="anleitung">Anleitung</string>
+    <string name="spielgeschwindigkeit">Wähle eine Spielgeschwindigkeit</string>
 </resources>
