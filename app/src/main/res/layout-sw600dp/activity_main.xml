@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Name: "
+            android:text="@string/name_text"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -35,9 +35,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Studigotchi"
+            android:text="@string/studigotchi"
             android:textSize="30sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginStart="10sp" />
 
 
         <TextView
@@ -74,7 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Leistung"
+            android:text="@string/leistung"
             android:textSize="24sp" />
 
         <TextView
@@ -110,7 +111,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Energie"
+            android:text="@string/energie"
             android:textSize="24sp" />
 
         <TextView
@@ -129,7 +130,8 @@
         android:layout_height="746dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="20dp"
+        android:contentDescription="@string/studi" />
 
 
     <LinearLayout
@@ -148,7 +150,8 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_learn" />
+            android:src="@drawable/ic_learn"
+            android:contentDescription="@string/lernen" />
 
         <ImageButton
             android:id="@+id/button_feed"
@@ -158,7 +161,8 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_eat" />
+            android:src="@drawable/ic_eat"
+            android:contentDescription="@string/essen" />
 
         <ImageButton
             android:id="@+id/button_sleep"
@@ -168,7 +172,8 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_sleep" />
+            android:src="@drawable/ic_sleep"
+            android:contentDescription="@string/schlafen" />
 
         <ImageButton
             android:id="@+id/button_party"
@@ -178,6 +183,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_party" />
+            android:src="@drawable/ic_party"
+            android:contentDescription="@string/feiern" />
     </LinearLayout>
 </LinearLayout>

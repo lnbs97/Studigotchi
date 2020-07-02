@@ -6,7 +6,7 @@
     <string name="welcome">Herzlich Willkommen bei Studigotchi!\n
     Jetzt geht die Reise deines Studigotchis los.\n
     Gib deinem Studigotchi zuerst einen Namen.</string>
-    <string name="deathMessage">Das wars dann wohl...</string>
+    <string name="deathMessage">Das wars dann wohl…</string>
     <string name="deathMessage2">Du wurdest exmatrikuliert!</string>
     <string name="tag_der_exmatrikulation">Tag der Exmatrikulation</string>
     <string name="feed">Füttern</string>
@@ -36,4 +36,16 @@
 \n\nWährend eine Aktion durchgeführt wird, sind alle anderen Aktionen gesperrt.</string>
     <string name="anleitung">Anleitung</string>
     <string name="spielgeschwindigkeit">Wähle eine Spielgeschwindigkeit</string>
+    <string name="neustart">Neustart</string>
+    <string name="exmatrikulierter_studi">Exmatrikulierter Studi</string>
+    <string name="gluecklicher_studi">Glücklicher Studi</string>
+    <string name="name_text">Name: </string>
+    <string name="studigotchi">Studigotchi</string>
+    <string name="leistung">Leistung</string>
+    <string name="energie">Energie</string>
+    <string name="lernen">Lernen</string>
+    <string name="studi">Studi</string>
+    <string name="essen">essen</string>
+    <string name="schlafen">schlafen</string>
+    <string name="feiern">feiern</string>
 </resources>

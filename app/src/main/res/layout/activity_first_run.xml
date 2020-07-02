@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/enter_Name"
-        android:inputType="textCapWords" />
+        android:inputType="textCapWords"
+        android:autofillHints="no" />
 
     <RadioGroup
         android:id="@+id/radioGroup"
