@@ -25,5 +25,4 @@
             android:text="@string/anleitungs_text"
             android:textSize="30sp" />
     </ScrollView>
-
 </LinearLayout>

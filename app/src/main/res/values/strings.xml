@@ -13,11 +13,13 @@
     <string name="sleep">Schlaf</string>
     <string name="party">Party</string>
     <string name="info_app">Studigotchi ist ein Informatikprojekt im Rahmen des Medieninformatikstudiums an der Hochschule
-                            Duesseldorf unter der Leitung von Prof. Dr. Gundula Dörries.</string>
+                            Duesseldorf unter der Leitung von Prof. Dr. Gundula Dörries und Jennifer Rose.</string>
     <string name="info_ueberschrift">Studigotchi</string>
     <string name="info_copyright"> &#xA9; Julian Dohmen, Jonas Feige &amp; Leo Nobis</string>
-    <string name="info_datenschutz">Bilder von folgenden Seiten wurden benutzt:\n
-                                    https://www.google.de/</string>
+    <string name="info_datenschutz">"Die Grafiken der Buttons stammen vom User Freepik von www.flaticon.com
+        \nAlle verwendeten Sounds und stammen von www.freesound.org und www.zapsplat.com
+        \nDie Musik stammt von www.freemusicarchive.org (Komiku - School)
+        \nAnimationen und Studi Grafiken wurden selbst erstellt."</string>
     <string name="test_game">Testspiel</string>
     <string name="normal_game">normales Spiel</string>
     <string name="slow_game">langsames Spiel</string>
