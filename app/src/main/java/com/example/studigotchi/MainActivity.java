@@ -1,5 +1,6 @@
 package com.example.studigotchi;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -27,7 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-
+@SuppressLint("SetTextI18n")
 public class MainActivity extends AppCompatActivity {
 
     private ImageView mStudiImageView;
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView pbEnergyText;
     private TextView mStudyDaysText;
 
-    private Thread updateUIThread;
     private boolean isAppInForegeround;
     private boolean isUIThreadRunning;
 
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         isAppInForegeround = true;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         final MediaPlayer mpLearnSound = MediaPlayer.create(this, R.raw.learn_sound);
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startUIThread() {
         if (!isUIThreadRunning) {
-            updateUIThread = new Thread() {
+            Thread updateUIThread = new Thread() {
                 @Override
                 public void run() {
                     while (isAppInForegeround) {
@@ -317,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
             updateUIThread.start();
         }
     }
+
 
     private void updateStudyDays() {
         // Studientage anzeigen lassen
@@ -710,14 +711,15 @@ public class MainActivity extends AppCompatActivity {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
             String description = "This is channel 1";
             NotificationChannel channelLearn = new NotificationChannel("notifyLearn", "LEARN", NotificationManager.IMPORTANCE_DEFAULT);
             channelLearn.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channelLearn);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channelLearn);
+            }
         }
     }
 
@@ -736,7 +738,9 @@ public class MainActivity extends AppCompatActivity {
         //Zeit, wann die Benachrichtigung nach druecken eines Buttons kommen soll.
         long timeInMillis = gameSpeed * 20;
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + timeInMillis, pendingIntent);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + timeInMillis, pendingIntent);
+        }
 
     }
 
