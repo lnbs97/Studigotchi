@@ -131,7 +131,8 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        android:contentDescription="@string/studi" />
+        android:contentDescription="@string/studi"
+        tools:src="@drawable/studi0001" />
 
 
     <LinearLayout

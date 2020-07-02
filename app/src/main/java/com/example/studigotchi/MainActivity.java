@@ -457,24 +457,19 @@ public class MainActivity extends AppCompatActivity {
         if (!isLearning && !isPartying && !isSleeping && !isEating) {
             if (learnValue > 80) {
                 //Setze glückliches Bild, sound, ...
-                //TODO prüfen ob Studi gerade lernt, nur wenn er nicht lernt wird Bild geändert
                 setAnimationHappy();
                 //mStudiImageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_studi_happy));
             } else if (learnValue >= 50) {
                 //Setze normales Bild und sounds
-                //TODO Animation einfuegen? DONE
                 setAnimationOver50();
             } else if (learnValue > 10) {
                 // Setze unglückliches bild und sound
-                //TODO Animation einfuegen?
                 setAnimationUnder50();
             } else if (learnValue > 0) {
                 //extrem kritischer Zustand
-                //TODO Animation einfuegen?
                 setAnimationUnder10();
             } else {
                 // Neustart
-                //TODO Sound einfuegen?
                 restart();
             }
         }
@@ -486,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void restart() {
         //Prüfen ob ein neuer highscore erreicht wurde
-        if (studyDays > highscoreDays) {
+        if (studyDays >= highscoreDays) {
             highscoreDays = studyDays;
             highscoreName = playerName;
             updateSharedPrefs();
