@@ -2,6 +2,9 @@ package com.example.studigotchi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -9,13 +12,25 @@ import android.view.View;
 import gr.net.maroulis.library.EasySplashScreen;
 
 public class SplashScreen extends AppCompatActivity {
+    private Class targetActivity;
+    private boolean isFirstRun;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Prüfen ob firstRun gilt und gegebenfalls firstRunActivity aufrufen
+        SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
+        isFirstRun = sharedPreferences.getBoolean("isFirstRun", true);
+
+        if (isFirstRun) {
+            //first RunActivity aufrufen, um Studinamen zu vergeben
+            targetActivity = firstRunActivity.class;
+        }else targetActivity = MainActivity.class;
+
         EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
                 .withFullScreen()
-                .withTargetActivity(MainActivity.class)
+                .withTargetActivity(targetActivity)
                 .withSplashTimeOut(1000)
                 .withBackgroundColor(Color.parseColor("#1a1b29"))
                 .withHeaderText("\nStudigotchi")
