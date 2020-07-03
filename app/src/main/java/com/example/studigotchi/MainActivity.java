@@ -428,10 +428,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getSharedPrefs();
-
-        isAppInForegeround = true;
-        startUIThread();
-        isUIThreadRunning = true;
+        cancelAlarm();
 
         //Abfrage, ob App das erste mal aufgerufen wurde
         if (isFirstRun) {
@@ -564,8 +561,6 @@ public class MainActivity extends AppCompatActivity {
         }
         // Bild ändern auf Animation lernen
         setAnimationLearn();
-        //Alarm fuer Benachrichtigung starten
-        startAlarm();
 
         learnValue += 30;
         energyValue -= 30;
@@ -588,8 +583,6 @@ public class MainActivity extends AppCompatActivity {
         //Buttons deaktivieren
         disableButtons();
 
-        //Alarm fuer Benachrichtigung starten
-        startAlarm();
         //Handler ruft nach 3 Sekunden die naechste Methode auf
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -657,8 +650,6 @@ public class MainActivity extends AppCompatActivity {
             learnValue -= ((timeStudiSlept / gameSpeed)/2);
             updateEnergyPb();
             energyClickTime = System.currentTimeMillis();
-            //Alarm fuer Benachrichtigung starten
-            startAlarm();
 
             learnEndTime = System.currentTimeMillis();
             isSleeping = false;
@@ -682,8 +673,6 @@ public class MainActivity extends AppCompatActivity {
         //während der Zeit, in der Party gemacht wird, werden keine Lernenpunkte abgezogen,
         //also learnClickTime auf Partyende setzen
         learnEndTime = System.currentTimeMillis() + 10 * gameSpeed;
-        //Alarm fuer Benachrichtigung starten
-        startAlarm();
         updateEnergyPb();
     }
 
@@ -753,6 +742,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void cancelAlarm() {
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+
+    }
+
     /**
      * openInfoActivity oeffnet InfoActivity und ermoeglicht dem User, Infos ueber die App zu bekommen
      */
@@ -780,6 +779,8 @@ public class MainActivity extends AppCompatActivity {
     //Beim Pausieren/Schließen der App wird ein aktueller timestamp in den SharedPrefs gespeichert.
     protected void onPause() {
         super.onPause();
+        /*Alarm setzen*/
+        startAlarm();
         isAppInForegeround = false;
         isUIThreadRunning = false;
         onPauseTime = System.currentTimeMillis();
