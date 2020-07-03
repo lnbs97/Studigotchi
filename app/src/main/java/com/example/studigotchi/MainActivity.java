@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mStudyDaysText;
 
     private boolean isAppInForegeround;
-    private boolean isUIThreadRunning;
+    private boolean isBackgroundThreadRunning;
 
     /* SharedPreferences Variablen START */
 
@@ -245,8 +245,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
         gameSpeed = sharedPreferences.getInt("gameSpeed", 2000);
 
-        startUIThread();
-        isUIThreadRunning = true;
+        startBackgroundThread();
+        isBackgroundThreadRunning = true;
 
         // wenn User auf den Lernen-Button klickt
         // Bilder aendern und Sound starten
@@ -290,8 +290,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void startUIThread() {
-        if (!isUIThreadRunning) {
+    private void startBackgroundThread() {
+        if (!isBackgroundThreadRunning) {
             Thread updateUIThread = new Thread() {
                 @Override
                 public void run() {
@@ -431,8 +431,8 @@ public class MainActivity extends AppCompatActivity {
         cancelAlarm();
 
         isAppInForegeround = true;
-        startUIThread();
-        isUIThreadRunning = true;
+        startBackgroundThread();
+        isBackgroundThreadRunning = true;
         playBackgroundSound();
 
         //set up StudiImage
@@ -743,7 +743,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, ReminderBroadcast.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);
 
-        alarmManager.cancel(pendingIntent);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
 
     }
 
@@ -777,7 +779,7 @@ public class MainActivity extends AppCompatActivity {
         /*Alarm setzen*/
         startAlarm();
         isAppInForegeround = false;
-        isUIThreadRunning = false;
+        isBackgroundThreadRunning = false;
         onPauseTime = System.currentTimeMillis();
         updateSharedPrefs();
         stopBackgroundSound();
