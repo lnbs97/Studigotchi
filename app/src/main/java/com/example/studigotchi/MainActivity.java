@@ -430,12 +430,6 @@ public class MainActivity extends AppCompatActivity {
         getSharedPrefs();
         cancelAlarm();
 
-        //Abfrage, ob App das erste mal aufgerufen wurde
-        if (isFirstRun) {
-            //first RunActivity aufrufen, um Studinamen zu vergeben
-            openFirstRunActivity();
-        }
-
         isAppInForegeround = true;
         startUIThread();
         isUIThreadRunning = true;
