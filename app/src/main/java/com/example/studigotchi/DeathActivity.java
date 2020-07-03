@@ -52,7 +52,7 @@ public class DeathActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Context context = DeathActivity.this;
-                Class destinationActivity = firstRunActivity.class;
+                Class destinationActivity = StartActivity.class;
                 Intent intent = new Intent(context, destinationActivity);
                 startActivity(intent);
             }

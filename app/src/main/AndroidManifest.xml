@@ -25,7 +25,7 @@
             android:name=".DeathActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".firstRunActivity"
+            android:name=".StartActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".SplashScreen"

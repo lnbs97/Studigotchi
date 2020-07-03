@@ -13,7 +13,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 
-public class firstRunActivity extends AppCompatActivity {
+public class StartActivity extends AppCompatActivity {
 
     String name;
     EditText nameInput;

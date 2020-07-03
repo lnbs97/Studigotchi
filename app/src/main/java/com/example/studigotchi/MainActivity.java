@@ -290,9 +290,17 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Startet einen Hintergrundthread, auf dem im Sekundentakt UI Elemente aktualisiert werden
+     * Es werden aktualisiert:
+     * Studientage
+     * Energieleiste
+     * Leistungleiste
+     * Studi Bild
+     */
     private void startBackgroundThread() {
         if (!isBackgroundThreadRunning) {
-            Thread updateUIThread = new Thread() {
+            Thread updateUI = new Thread() {
                 @Override
                 public void run() {
                     while (isAppInForegeround) {
@@ -322,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             };
-            updateUIThread.start();
+            updateUI.start();
         }
     }
 
@@ -769,7 +777,7 @@ public class MainActivity extends AppCompatActivity {
      * openFirstActivity soll geöffnet werden, damit User seinen Namen eintragen kann
      */
     private void openFirstRunActivity() {
-        Intent intent = new Intent(this, firstRunActivity.class);
+        Intent intent = new Intent(this, StartActivity.class);
         startActivity(intent);
     }
 

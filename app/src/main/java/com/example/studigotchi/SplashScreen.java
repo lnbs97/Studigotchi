@@ -2,8 +2,6 @@ package com.example.studigotchi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,7 +23,7 @@ public class SplashScreen extends AppCompatActivity {
 
         if (isFirstRun) {
             //first RunActivity aufrufen, um Studinamen zu vergeben
-            targetActivity = firstRunActivity.class;
+            targetActivity = StartActivity.class;
         }else targetActivity = MainActivity.class;
 
         EasySplashScreen config = new EasySplashScreen(SplashScreen.this)
