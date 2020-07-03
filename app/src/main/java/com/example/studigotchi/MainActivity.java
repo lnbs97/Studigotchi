@@ -566,6 +566,7 @@ public class MainActivity extends AppCompatActivity {
         energyValue -= 30;
         //10 Sekunden hinzufuegen, die das Lernen dauert -> LearnEndTime
         learnEndTime = System.currentTimeMillis() + 10 * gameSpeed;
+        energyClickTime = learnEndTime;
         isLearning = true;
         updateLearnPb();
         updateEnergyPb();
