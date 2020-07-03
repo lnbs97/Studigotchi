@@ -85,6 +85,7 @@ public class firstRunActivity extends AppCompatActivity {
         .putLong("firstRunTime", firstRunTime)
                 //Spielgeschwindigkeit einstellen
         .putInt("gameSpeed", gameSpeed)
+        .putBoolean("isFirstRun", false)
         .putLong("learnEndTime", System.currentTimeMillis())
         .putLong("energyClickTime",System.currentTimeMillis()).apply();
 

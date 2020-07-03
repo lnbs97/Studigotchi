@@ -14,7 +14,7 @@ public class ReminderBroadcast extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context,"notifyLearn")
                 .setSmallIcon(R.drawable.studi0001)
                 .setContentTitle("Benachrichtigung")
-                .setContentText("Dein Studigotchi langweilt sich")
+                .setContentText("Schau doch mal nach deinem Studigotchi")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);

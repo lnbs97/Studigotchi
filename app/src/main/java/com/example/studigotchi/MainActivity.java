@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 .putBoolean("isFirstRun", isFirstRun)
                 .putString("playerName", "EMPTY")
                 .putInt("learnValue", learnValue)
-                .putInt("energyValue", 100)
+                .putInt("energyValue", energyValue)
                 .putInt("studyDays", 0)
                 .putInt("gameSpeed", 2000).apply();
     }
@@ -435,12 +435,13 @@ public class MainActivity extends AppCompatActivity {
 
         //Abfrage, ob App das erste mal aufgerufen wurde
         if (isFirstRun) {
-            //isFirstRun Boolean auf false
-            isFirstRun = false;
-
             //first RunActivity aufrufen, um Studinamen zu vergeben
             openFirstRunActivity();
         }
+
+        isAppInForegeround = true;
+        startUIThread();
+        isUIThreadRunning = true;
         playBackgroundSound();
 
         //set up StudiImage
