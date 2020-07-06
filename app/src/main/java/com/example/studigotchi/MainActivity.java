@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
     /* SharedPreferences Variablen ENDE */
 
+    /**
+     * Holt Werte aus den Shared Preferences und schreibt sie in globale Variablen
+     */
     private void getSharedPrefs() {
         SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
 
@@ -105,6 +108,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Schreibt Werte aus den globalen Variablen in die Shared Preferences
+     */
     private void updateSharedPrefs() {
         SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -129,6 +136,9 @@ public class MainActivity extends AppCompatActivity {
                 .putInt("highscoreDays", highscoreDays).apply();
     }
 
+    /**
+     * Setzt alle Werte in den Shared Preferences auf einen Startwert für ein neues Spiel
+     */
     private void resetSharedPrefs() {
         SharedPreferences sharedPreferences = getSharedPreferences("file", 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -156,12 +166,20 @@ public class MainActivity extends AppCompatActivity {
                 .putInt("gameSpeed", 2000).apply();
     }
 
+    /**
+     * Überschrieben, siehe Android API
+     * Aktiviere Menü Layout
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Überschrieben, siehe Android API
+     * Prüft welches Menü Item angeklickt wurde und führt entsprechende Aktionen aus
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -203,6 +221,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
     }
+
+    /**
+     * Teil des Android Activity Lifecycles
+     * Initialisiere UI Elemente
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -319,7 +342,7 @@ public class MainActivity extends AppCompatActivity {
                                     updateStudyDays();
                                     updateEnergyPb();
                                     updateLearnPb();
-                                    updateImage();
+                                    updateState();
                                 }
                             });
                             Log.i(LOG_TAG, "learnValue: " + learnValue);
@@ -335,6 +358,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Berechnet die vergangenen Tage (ingame) und aktualisiert die globale Variable
+     */
     private void updateStudyDays() {
         // Studientage anzeigen lassen
 
@@ -346,6 +372,9 @@ public class MainActivity extends AppCompatActivity {
         mStudyDaysText.setText("Tag " + studyDays);
     }
 
+    /**
+     * Prüft, ob der Studi sich gerade im Lernen Status befindet
+     */
     private void checkLearnStatus() {
         long currentTime = System.currentTimeMillis();
 
@@ -359,6 +388,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Logik zur Berechnung der Energie nachdem die App geschlossen war
+     */
     private void updateEnergyValue() {
         long currentTime = System.currentTimeMillis();
         int energyLost = (int) ((currentTime - energyClickTime) / (gameSpeed));
@@ -369,6 +401,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Logik zur Berechnung der Leistung nachdem die App geschlossen war
+     */
     private void updateLearnValue() {
         long currentTime = System.currentTimeMillis();
         if (!isLearning && currentTime > learnEndTime) {
@@ -384,55 +419,82 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationHappy() {
         mStudiImageView.setBackgroundResource(R.drawable.studianimation);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationLearn() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_learn);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationOver50() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_more50_idle);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationUnder10() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_under10_idle);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationUnder50() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_under50_idle);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationSleeping() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_sleeping);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationParty() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_party);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
+    /**
+     * Setzt die Studi Animation und startet sie
+     */
     private void setAnimationEating() {
         mStudiImageView.setBackgroundResource(R.drawable.animation_eating);
         backgroundAnimation = (AnimationDrawable) mStudiImageView.getBackground();
         backgroundAnimation.start();
     }
 
-    //beim Öffnen der App wird timestamp ausgelesen und timestamp gespeichert
+    /**
+     * Siehe Android API
+     */
+    @Override
     protected void onResume() {
         super.onResume();
         getSharedPrefs();
@@ -453,6 +515,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Prüft, ob der Studi sich im Party Status befindet
+     */
     private void checkPartyStatus() {
         long currentTime = System.currentTimeMillis();
         if (currentTime > energyClickTime) {
@@ -461,8 +526,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateImage() {
-
+    /**
+     * Setzt die richtige Animation, basierend auf Statuswerten des Studis
+     * Startet das Spiel neu, falls der learnValue unter 0 fällt
+     */
+    private void updateState() {
         if (!isLearning && !isPartying && !isSleeping && !isEating) {
             if (learnValue > 80) {
                 //Setze glückliches Bild, sound, ...
@@ -503,16 +571,19 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    /**
+     * Startet Hintergrundmusik
+     */
     public void playBackgroundSound() {
         Intent intent = new Intent(MainActivity.this, BackgroundSoundService.class);
         startService(intent);
         musicIsPlaying = true;
-        //TODO Sound icon auf eingeschaltet setzen
     }
 
 
     /**
-     * Aktualisiert die App und den Studi basierend auf seinem Leben
+     * Aktualisiert die App und den Studi basierend auf seinen Statuswerten
      * Wird bei jedem Öffnen ausgeführt
      */
     private void checkState() {
@@ -533,8 +604,10 @@ public class MainActivity extends AppCompatActivity {
             checkPartyStatus();
         } else if (isLearning) {
             checkLearnStatus();
+        } else if (learnValue < 0) {
+            restart();
         }
-        updateImage();
+        updateState();
     }
 
     /**
@@ -575,6 +648,9 @@ public class MainActivity extends AppCompatActivity {
         disableButtons();
     }
 
+    /**
+     * Logik für den Essen Button
+     */
     private void feed() {
         //Bild aendern auf essen
         setAnimationEating();
@@ -595,6 +671,9 @@ public class MainActivity extends AppCompatActivity {
         }, 3000);
     }
 
+    /**
+     * Wird ausgeführt, wenn der Studi fertig gegessen hat
+     */
     private void feedOver() {
         //Studi-Bild entsprechend ändern
         checkState();
@@ -633,6 +712,9 @@ public class MainActivity extends AppCompatActivity {
         mFeedButton.setImageAlpha(0XFF);
     }
 
+    /**
+     * Logik für den Schlafen Button
+     */
     private void sleep() {
         if (!isSleeping) {
             //Bild aendern auf schlafen
@@ -658,7 +740,7 @@ public class MainActivity extends AppCompatActivity {
             isSleeping = false;
 
             //Studi-Bild entsprechend ändern
-            updateImage();
+            updateState();
             //Button Bild ändern zu "Einschlafen-Bild"
             mSleepButton.setImageResource(R.drawable.ic_sleep);
 
@@ -667,6 +749,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Logik für den Party Button
+     */
     private void party() {
         setAnimationParty();
         isPartying = true;
@@ -679,6 +764,9 @@ public class MainActivity extends AppCompatActivity {
         updateEnergyPb();
     }
 
+    /**
+     * Aktualisiert die Lernen Anzeige
+     */
     private void updateLearnPb() {
         if (learnValue > 100) {
             learnValue = 100;
@@ -691,6 +779,9 @@ public class MainActivity extends AppCompatActivity {
         pbLearnText.setText(learnValue + "/" + pbLearn.getMax());
     }
 
+    /**
+     * Aktualisiert die Energie Anzeige
+     */
     private void updateEnergyPb() {
         if (energyValue > 100) {
             energyValue = 100;
@@ -742,9 +833,11 @@ public class MainActivity extends AppCompatActivity {
         if (alarmManager != null) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeAtButtonClick + timeInMillis, pendingIntent);
         }
-
     }
 
+    /**
+     * Entfernt ausstehende Notifications
+     */
     private void cancelAlarm() {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -781,7 +874,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //Beim Pausieren/Schließen der App wird ein aktueller timestamp in den SharedPrefs gespeichert.
+    /**
+     * Siehe Android API
+     */
+    @Override
     protected void onPause() {
         super.onPause();
         /*Alarm setzen*/
@@ -801,6 +897,9 @@ public class MainActivity extends AppCompatActivity {
         stopService(intent);
     }
 
+    /**
+     * Siehe Android API
+     */
     @Override
     protected void onStop() {
         super.onStop();

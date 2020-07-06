@@ -41,6 +41,11 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Prüft welcher Radio Button ausgewählt wurde
+     *
+     * @param view das ausgewählte Element
+     */
     public void checkButton(View view) {
 
         int radioId = radioGroup.getCheckedRadioButtonId();
@@ -48,7 +53,7 @@ public class StartActivity extends AppCompatActivity {
         switch(radioId) {
             case R.id.testGame:
                 gameSpeed = 2000;
-                    break;
+                break;
             case R.id.normalGame:
                 gameSpeed = 10000;
                 break;
@@ -65,8 +70,11 @@ public class StartActivity extends AppCompatActivity {
     public void onBackPressed() {
     }
 
-    //erst namen auslesen, diesen mit der Konstanten uebergeben und MainActivity starten
-    public void openMainActivity(){
+    /**
+     * Logik für den Enter Button
+     */
+    public void openMainActivity() {
+        //erst namen auslesen, diesen mit der Konstanten uebergeben und MainActivity starten
         nameInput = findViewById(R.id.nameInput);
         name = nameInput.getText().toString();
         //checken, ob ein Name eingegeben wurde, ansonsten return
@@ -82,12 +90,12 @@ public class StartActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = mySPR.edit();
         editor.putString("playerName", name)
                 //Zeit des ersten Starts
-        .putLong("firstRunTime", firstRunTime)
+                .putLong("firstRunTime", firstRunTime)
                 //Spielgeschwindigkeit einstellen
-        .putInt("gameSpeed", gameSpeed)
-        .putBoolean("isFirstRun", false)
-        .putLong("learnEndTime", System.currentTimeMillis())
-        .putLong("energyClickTime",System.currentTimeMillis()).apply();
+                .putInt("gameSpeed", gameSpeed)
+                .putBoolean("isFirstRun", false)
+                .putLong("learnEndTime", System.currentTimeMillis())
+                .putLong("energyClickTime", System.currentTimeMillis()).apply();
 
 
         //zurueck zur MainActivity
