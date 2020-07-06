@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private int studyDays;
     private int highscoreDays;
     private int gameSpeed;
+    private MediaPlayer mpEndLearningSound;
 
 
     /* SharedPreferences Variablen ENDE */
@@ -243,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
         final MediaPlayer mpFeedSound = MediaPlayer.create(this, R.raw.feed_sound);
         final MediaPlayer mpWakeUpSound = MediaPlayer.create(this, R.raw.wake_up_sound);
         final MediaPlayer mpYawningSound = MediaPlayer.create(this, R.raw.yawning_sound);
+        mpEndLearningSound = MediaPlayer.create(this, R.raw.funktion_ende);
 
         //notificationChannel aufrufen
         createNotificationChannel();
@@ -384,6 +386,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             //Wenn Studi zu ende gelernt hat
             isLearning = false;
+            mpEndLearningSound.start();
             enableButtons();
         }
     }
