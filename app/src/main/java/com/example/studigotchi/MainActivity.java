@@ -168,12 +168,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Überschrieben, siehe Android API
+     * Siehe Android API
      * Aktiviere Menü Layout
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        menu.getItem(0).setIcon(R.drawable.volume_on);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -507,6 +508,9 @@ public class MainActivity extends AppCompatActivity {
         startBackgroundThread();
         isBackgroundThreadRunning = true;
         playBackgroundSound();
+
+        //Menü neu erstellen
+        invalidateOptionsMenu();
 
         //set up StudiImage
         checkState();
